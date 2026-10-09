@@ -17,8 +17,14 @@ class BadgeScript
         if ($grenze <= 0) {
             $grenze = 100;
         }
+        $textProzent = trim((string)$config->get('OSVBadges.sparenTextProzent', ''));
+        $textEuro = trim((string)$config->get('OSVBadges.sparenTextEuro', ''));
         return $twig->render('OSVBadges::Containers.BadgeScript', [
-            'einstellungJson' => json_encode(['grenze' => $grenze], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT),
+            'einstellungJson' => json_encode([
+                'grenze' => $grenze,
+                'textProzent' => $textProzent !== '' ? $textProzent : 'Sie sparen {prozent}',
+                'textEuro' => $textEuro !== '' ? $textEuro : 'Sie sparen {euro}',
+            ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT),
         ]);
     }
 }

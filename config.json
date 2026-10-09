@@ -15,6 +15,18 @@
           "required": false,
           "label": "Grenze in Euro (UVP): darunter Prozent, ab dieser UVP Euro-Betrag",
           "options": { "defaultValue": "100" }
+        },
+        "sparenTextProzent": {
+          "type": "text",
+          "required": false,
+          "label": "Text unter der Grenze, {prozent} wird ersetzt (z. B. 30 %)",
+          "options": { "defaultValue": "Sie sparen {prozent}" }
+        },
+        "sparenTextEuro": {
+          "type": "text",
+          "required": false,
+          "label": "Text ab der Grenze, {euro} wird ersetzt (z. B. 27,08 €)",
+          "options": { "defaultValue": "Sie sparen {euro}" }
         }
       }
     }
