@@ -2,11 +2,17 @@
 
 Neueste Version oben. Jede Version ist ein Git-Tag; im Plugin-Set wird der Tag gewählt.
 
+## 0.6.1 (09.10.2026)
+
+- Nach einem Filterklick lädt Ceres die Seite neu und sprang bisher nach oben; die Seite steht jetzt wieder an derselben Stelle
+- Angehakte Filter hell hinterlegt statt vollflächig blau, nur noch ein Haken (Ceres-Haken ausgeblendet)
+- Suchfeld schon ab 8 Einträgen (z. B. Modell)
+
 ## 0.6.0 (09.10.2026)
 
 - Filter auf Kategorieseiten als schlanke Liste: keine Kästen und eigenen Scrollbalken mehr, Trennlinien, Kästchen zum Anhaken
 - Häufigste Einträge zuerst (nur Anzeige-Reihenfolge), je Filter 6 sichtbar, Rest über „Alle … anzeigen“
-- Suchfeld ab 12 Einträgen (z. B. Motiv, Hersteller)
+- Suchfeld ab 12 Einträgen (z. B. Motiv, Hersteller), ab 0.6.1 ab 8
 - Neu in der Konfiguration: Bereich „Filter auf Kategorieseiten“ (an/aus, Anzahl sichtbar, Suchfeld ab)
 
 ## 0.5.2 (09.10.2026)

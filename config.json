@@ -91,7 +91,7 @@
           "required": false,
           "label": "Suchfeld ab so vielen Einträgen",
           "options": {
-            "defaultValue": "12"
+            "defaultValue": "8"
           }
         }
       }

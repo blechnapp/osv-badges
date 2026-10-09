@@ -40,7 +40,11 @@
 .widget-filter-base .form-check-label .d-flex { align-items: center; gap: 10px; }
 .widget-filter-base .form-check-label .d-flex:before { content: ""; flex: 0 0 16px; height: 16px; border: 1.5px solid #b9c2d0; border-radius: 4px; background: #fff center/10px no-repeat; transition: all .15s; }
 .widget-filter-base .form-check-input:checked + .form-check-label .d-flex:before { background-color: #0c2a5e; border-color: #0c2a5e; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpath d='M1 5l3.5 3.5L11 1' fill='none' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E"); }
-.widget-filter-base .form-check-input:checked + .form-check-label { font-weight: 600; color: #0c2a5e; }
+.widget-filter-base .form-check-input:checked + .form-check-label { font-weight: 600; color: #0c2a5e !important; }
+/* Ceres färbt angehakte Einträge vollflächig blau (bg-appearance) und setzt einen eigenen Haken davor: hell hinterlegen, nur unser Kästchen */
+.widget-filter-base .form-check-label.bg-appearance { background: #eef2f8 !important; color: #0c2a5e !important; }
+.widget-filter-base .form-check-label.bg-appearance .filter-badge { color: #0c2a5e !important; }
+.widget-filter-base .form-check-label::before, .widget-filter-base .form-check-label::after { display: none !important; }
 .widget-filter-base .filter-badge { flex: 0 0 auto; white-space: nowrap; background: transparent !important; color: #8a93a3 !important; border: 0 !important; padding: 0 !important; font-size: 12px !important; min-width: 0 !important; height: auto !important; line-height: 1.5 !important; }
 .widget-filter-base .card.osvf-zu .osvf-mehr, .widget-filter-base .card .osvf-weg { display: none !important; }
 .widget-filter-base .card.osvf-sucht .osvf-mehr:not(.osvf-weg) { display: block !important; }
@@ -132,6 +136,27 @@
     band.appendChild(b);
     platz.appendChild(band);
   }
+  // Filterklick lädt bei Ceres die ganze Seite neu und landet oben: Position merken und nach dem Laden wiederherstellen
+  var SPRUNG = "osvf-scroll";
+  function sprungMerken(e) {
+    if (!e.target.closest || !e.target.closest(".widget-filter-base .form-check-label, .widget-filter-base .form-check-input")) return;
+    try { sessionStorage.setItem(SPRUNG, JSON.stringify({ y: window.scrollY || 0, p: location.pathname, t: Date.now() })); } catch (x) { }
+  }
+  function sprungZurueck() {
+    var m = null;
+    try { m = JSON.parse(sessionStorage.getItem(SPRUNG) || "null"); sessionStorage.removeItem(SPRUNG); } catch (x) { }
+    if (!m || m.p !== location.pathname || Date.now() - m.t > 20000 || !(m.y > 0)) return;
+    // Bilder und Kacheln verändern die Höhe noch eine Weile: einige Male nachstellen, aufhören, sobald jemand selbst scrollt
+    var n = 0, selbst = false;
+    function halt() { selbst = true; }
+    window.addEventListener("wheel", halt, { passive: true, once: true });
+    window.addEventListener("touchstart", halt, { passive: true, once: true });
+    (function stell() {
+      if (selbst) return;
+      window.scrollTo({ top: m.y, left: 0, behavior: "instant" });
+      if (++n < 8) setTimeout(stell, 250);
+    })();
+  }
   // Filter: häufigste Einträge zuerst (nur Anzeige-Reihenfolge, Ceres-Liste bleibt unberührt), Rest aufklappbar, Suchfeld bei langen Listen
   function filterKarte(c) {
     var zeilen = [].slice.call(c.querySelectorAll(":scope > .form-check-wrapper"));
@@ -198,6 +223,7 @@
     if (!(app && app._isMounted) && versuch < 40) { setTimeout(function () { start(versuch + 1); }, 100); return; }
     alle();
     setInterval(alle, 1000);
+    if (EIN.filter) { sprungZurueck(); document.addEventListener("click", sprungMerken, true); }
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { start(0); });
   else start(0);

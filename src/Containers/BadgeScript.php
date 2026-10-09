@@ -37,7 +37,7 @@ class BadgeScript
                 'liefer' => $liefer,
                 'filter' => $filter,
                 'filterSichtbar' => max(1, (int)$config->get('OSVBadges.filterSichtbar', '6')),
-                'filterSucheAb' => max(1, (int)$config->get('OSVBadges.filterSucheAb', '12')),
+                'filterSucheAb' => max(1, (int)$config->get('OSVBadges.filterSucheAb', '8')),
                 'grenze' => $grenze,
                 'textProzent' => $textProzent !== '' ? $textProzent : 'Sie sparen {prozent}',
                 'textEuro' => $textEuro !== '' ? $textEuro : 'Sie sparen {euro}',
