@@ -18,7 +18,8 @@ class BadgeScript
         $sparen = $this->an($config, 'sparenAktiv');
         $kachel = $this->an($config, 'kachelAktiv');
         $liefer = $this->an($config, 'lieferAktiv');
-        if (!$sparen && !$kachel && !$liefer) {
+        $filter = $this->an($config, 'filterAktiv');
+        if (!$sparen && !$kachel && !$liefer && !$filter) {
             return '';
         }
         $grenze = (float)str_replace(',', '.', (string)$config->get('OSVBadges.sparenGrenze', '100'));
@@ -30,9 +31,13 @@ class BadgeScript
         $textVor = trim((string)$config->get('OSVBadges.lieferTextVor', ''));
         return $twig->render('OSVBadges::Containers.BadgeScript', [
             'kachel' => $kachel,
+            'filter' => $filter,
             'einstellungJson' => json_encode([
                 'sparen' => $sparen,
                 'liefer' => $liefer,
+                'filter' => $filter,
+                'filterSichtbar' => max(1, (int)$config->get('OSVBadges.filterSichtbar', '6')),
+                'filterSucheAb' => max(1, (int)$config->get('OSVBadges.filterSucheAb', '12')),
                 'grenze' => $grenze,
                 'textProzent' => $textProzent !== '' ? $textProzent : 'Sie sparen {prozent}',
                 'textEuro' => $textEuro !== '' ? $textEuro : 'Sie sparen {euro}',

@@ -2,6 +2,13 @@
 
 Neueste Version oben. Jede Version ist ein Git-Tag; im Plugin-Set wird der Tag gewählt.
 
+## 0.6.0 (09.10.2026)
+
+- Filter auf Kategorieseiten als schlanke Liste: keine Kästen und eigenen Scrollbalken mehr, Trennlinien, Kästchen zum Anhaken
+- Häufigste Einträge zuerst (nur Anzeige-Reihenfolge), je Filter 6 sichtbar, Rest über „Alle … anzeigen“
+- Suchfeld ab 12 Einträgen (z. B. Motiv, Hersteller)
+- Neu in der Konfiguration: Bereich „Filter auf Kategorieseiten“ (an/aus, Anzahl sichtbar, Suchfeld ab)
+
 ## 0.5.2 (09.10.2026)
 
 - Sterne korrekt gefüllt: Sternzeile wieder mit fester Breite (85px, wie im Feedback-Plugin). In 0.5.1 zeigte die Zeile durch display:flex nur einen gefüllten Stern

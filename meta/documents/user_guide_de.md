@@ -34,3 +34,10 @@ Badges auf den Artikelkacheln, auf Kategorieseiten und in den Ergebnissen der OS
 - **Kacheln als Karte:** weiße Karte mit leichtem Schatten, Preis groß und blau vorn, durchgestrichene UVP klein dahinter, alles linksbündig. Der Artikelname ist am Rechner immer drei Zeilen hoch (länger wird mit „…“ gekürzt), damit Preise und Lieferbarkeit je Reihe auf einer Höhe stehen. Sterne ohne Bewertung werden ausgeblendet.
 - **Lieferbarkeit:** kleines Schild unter dem Preis, grün „Sofort versandfertig“, orange bei Vorbestellung „Lieferbar ab {datum}“ mit dem Erscheinungsdatum der Variante (Kalendertag, ohne Zeitzonen-Umrechnung). Gilt für Kategorieseiten; die Kacheln der OSV-Suche bekommen kein Schild.
 - Beides lässt sich in der Konfiguration unter „Kachel-Gestaltung“ einzeln abschalten.
+
+## Filter auf Kategorieseiten (ab 0.6.0)
+
+- Die Ceres-Filter (Hersteller, Motiv, Größe …) erscheinen als schlanke Liste ohne Kästen. Einträge mit den meisten Artikeln stehen oben; je Filter sind 6 sichtbar, der Rest klappt über „Alle … anzeigen“ auf. Angehakte Einträge bleiben immer sichtbar.
+- Ab 12 Einträgen gibt es ein Suchfeld („Motiv suchen …“).
+- Die Reihenfolge ändert nur die Anzeige; die Ceres-Filter selbst bleiben unverändert.
+- Konfiguration „Filter auf Kategorieseiten“: an/aus, Anzahl sichtbarer Einträge, Suchfeld ab.

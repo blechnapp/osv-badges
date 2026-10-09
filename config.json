@@ -66,6 +66,35 @@
           }
         }
       }
+    },
+    "Filter": {
+      "label": "Filter auf Kategorieseiten",
+      "formFields": {
+        "filterAktiv": {
+          "type": "checkBox",
+          "required": false,
+          "label": "Filter als schlanke Liste: häufigste Einträge zuerst, Rest aufklappbar",
+          "options": {
+            "defaultValue": "true"
+          }
+        },
+        "filterSichtbar": {
+          "type": "text",
+          "required": false,
+          "label": "So viele Einträge je Filter sofort zeigen",
+          "options": {
+            "defaultValue": "6"
+          }
+        },
+        "filterSucheAb": {
+          "type": "text",
+          "required": false,
+          "label": "Suchfeld ab so vielen Einträgen",
+          "options": {
+            "defaultValue": "12"
+          }
+        }
+      }
     }
   }
 }

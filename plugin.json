@@ -2,10 +2,10 @@
   "name": "OSVBadges",
   "namespace": "OSVBadges",
   "type": "general",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "license": "proprietary",
   "author": "OSV",
-  "shortDescription": "Artikelkacheln: Badge „Sie sparen“, Karten-Gestaltung und Lieferbarkeit (Kategorieseiten und Suchergebnisse).",
+  "shortDescription": "Kategorieseite: Artikelkacheln (Badge „Sie sparen“, Karte, Lieferbarkeit, Sterne) und Filter.",
   "description": "Zeigt auf jeder Artikelkachel mit Streichpreis (Shoppreis unter Shop-UVP) ein Badge „Sie sparen …“: unter 100 € UVP in Prozent, ab 100 € in Euro; verschwindet von selbst, sobald Ceres keinen Streichpreis mehr zeigt. Gestaltet die Kacheln als Karte (Preis vorn, UVP dahinter, Sterne und Preis je Reihe auf einer Höhe, leere Sterne ausgeblendet) und zeigt die Lieferbarkeit, bei Vorbestellung mit Erscheinungsdatum.",
   "categories": [
     "3527"
