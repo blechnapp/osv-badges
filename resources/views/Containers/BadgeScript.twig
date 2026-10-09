@@ -1,11 +1,8 @@
 <style>
-/* Eckband: schräg über der linken oberen Bildecke, außerhalb der Ecke abgeschnitten */
-.cmp-product-thumb .prop-1-1 > .osvb-ecke { position: absolute; top: 0; left: 0; width: 160px; height: 160px; overflow: hidden; z-index: 2; pointer-events: none; }
-.osvb-ecke .osvb { position: absolute; top: 42px; left: -58px; width: 240px; transform: rotate(-45deg); padding: 6px 0; background: #8B1A1A; color: #fff; font-weight: bold; font-size: 13px; line-height: 1.2; text-align: center; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,.3); }
-@media (max-width: 575.98px) {
-  .cmp-product-thumb .prop-1-1 > .osvb-ecke { width: 140px; height: 140px; }
-  .osvb-ecke .osvb { top: 36px; left: -56px; width: 220px; font-size: 12px; padding: 5px 0; }
-}
+/* Band am unteren Bildrand: aufgelegt, links bündig, zwei Drittel breit; verschiebt nichts */
+.cmp-product-thumb .prop-1-1 > .osvb-band { position: absolute; left: 0; bottom: 0; width: 66%; z-index: 2; pointer-events: none; }
+.osvb-band .osvb { display: block; padding: 6px 22px 6px 10px; background: #8B1A1A; color: #fff; font-weight: bold; font-size: 14px; line-height: 1.25; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; clip-path: polygon(0 0, 100% 0, calc(100% - 14px) 100%, 0 100%); }
+@media (max-width: 575.98px) { .osvb-band .osvb { font-size: 13px; padding: 5px 20px 5px 9px; } }
 </style>
 <script>
 /* OSV Badges: Badges auf Artikelkacheln (Ceres-Kategorien und OSV-Suchergebnisse). Kein MutationObserver, kein Vue.component, kein ceresStore. */
@@ -42,20 +39,20 @@
   function kachel(k) {
     var platz = k.querySelector(".thumb-image .prop-1-1");
     if (!platz) return;
-    // Das Eckband trägt einen Text: die erste Regel, die etwas liefert
+    // Das Band trägt einen Text: die erste Regel, die etwas liefert
     var text = "";
     for (var i = 0; i < REGELN.length && !text; i++) { try { text = REGELN[i](k) || ""; } catch (x) { text = ""; } }
-    if ((k.getAttribute(MARKE) || "") === text && (!text || platz.querySelector(".osvb-ecke"))) return; // unverändert
-    var alt = platz.querySelector(".osvb-ecke");
+    if ((k.getAttribute(MARKE) || "") === text && (!text || platz.querySelector(".osvb-band"))) return; // unverändert
+    var alt = platz.querySelector(".osvb-band");
     if (alt) alt.parentNode.removeChild(alt);
     k.setAttribute(MARKE, text);
     if (!text) return;
-    var ecke = document.createElement("div");
-    ecke.className = "osvb-ecke";
+    var band = document.createElement("div");
+    band.className = "osvb-band";
     var b = document.createElement("span");
     b.className = "osvb"; b.textContent = text;
-    ecke.appendChild(b);
-    platz.appendChild(ecke);
+    band.appendChild(b);
+    platz.appendChild(band);
   }
   function alle() {
     [].forEach.call(document.querySelectorAll("article.cmp-product-thumb"), function (k) {
