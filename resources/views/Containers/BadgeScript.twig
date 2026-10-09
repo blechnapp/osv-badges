@@ -1,8 +1,8 @@
 <style>
-/* Band am unteren Bildrand: aufgelegt, links bündig, zwei Drittel breit; verschiebt nichts */
-.cmp-product-thumb .prop-1-1 > .osvb-band { position: absolute; left: 0; bottom: 0; width: 66%; z-index: 2; pointer-events: none; }
-.osvb-band .osvb { display: block; padding: 6px 22px 6px 10px; background: #8B1A1A; color: #fff; font-weight: bold; font-size: 14px; line-height: 1.25; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; clip-path: polygon(0 0, 100% 0, calc(100% - 14px) 100%, 0 100%); }
-@media (max-width: 575.98px) { .osvb-band .osvb { font-size: 13px; padding: 5px 20px 5px 9px; } }
+/* Gold-Etikett am unteren Bildrand: aufgelegt, links angesetzt, so breit wie der Text; verschiebt nichts */
+.cmp-product-thumb .prop-1-1 > .osvb-band { position: absolute; left: 0; bottom: 12px; max-width: 90%; z-index: 2; pointer-events: none; }
+.osvb-band .osvb { display: inline-block; max-width: 100%; padding: 5px 14px 5px 10px; border-radius: 0 4px 4px 0; background: #d4b062; color: #0c2a5e; font-weight: bold; font-size: 13px; line-height: 1.25; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 1px 4px rgba(0,0,0,.2); }
+@media (max-width: 575.98px) { .osvb-band .osvb { font-size: 13px; padding: 5px 12px 5px 9px; } }
 </style>
 <script>
 /* OSV Badges: Badges auf Artikelkacheln (Ceres-Kategorien und OSV-Suchergebnisse). Kein MutationObserver, kein Vue.component, kein ceresStore. */

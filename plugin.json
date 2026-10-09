@@ -2,7 +2,7 @@
   "name": "OSVBadges",
   "namespace": "OSVBadges",
   "type": "general",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "license": "proprietary",
   "author": "OSV",
   "shortDescription": "Badges auf den Artikelkacheln (Kategorieseiten und Suchergebnisse), zuerst „Sie sparen“ bei Streichpreis.",
