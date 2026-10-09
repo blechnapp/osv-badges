@@ -1,0 +1,22 @@
+{
+  "formatVersion": 1,
+  "menu": {
+    "Sparen": {
+      "label": "Badge „Sie sparen“",
+      "formFields": {
+        "sparenAktiv": {
+          "type": "checkBox",
+          "required": false,
+          "label": "Badge „Sie sparen“ auf Kacheln mit Streichpreis zeigen",
+          "options": { "defaultValue": "true" }
+        },
+        "sparenGrenze": {
+          "type": "text",
+          "required": false,
+          "label": "Grenze in Euro (UVP): darunter Prozent, ab dieser UVP Euro-Betrag",
+          "options": { "defaultValue": "100" }
+        }
+      }
+    }
+  }
+}

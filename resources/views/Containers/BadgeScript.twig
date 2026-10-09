@@ -1,0 +1,73 @@
+<style>
+.cmp-product-thumb .prop-1-1 > .osvb-liste { position: absolute; top: 8px; left: 8px; z-index: 2; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; pointer-events: none; }
+.osvb { display: inline-block; padding: 4px 9px; border-radius: 4px; background: #8B1A1A; color: #fff; font-weight: bold; font-size: 13px; line-height: 1.3; white-space: nowrap; box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+@media (max-width: 575.98px) { .osvb { font-size: 11px; padding: 3px 7px; } .cmp-product-thumb .prop-1-1 > .osvb-liste { top: 6px; left: 6px; } }
+</style>
+<script>
+/* OSV Badges: Badges auf Artikelkacheln (Ceres-Kategorien und OSV-Suchergebnisse). Kein MutationObserver, kein Vue.component, kein ceresStore. */
+(function () {
+  var EIN = {{ einstellungJson | raw }};
+  var MARKE = "data-osvb";
+
+  // "1.234,56 €" -> 1234.56; ohne Betrag -> 0
+  function betrag(t) {
+    var m = String(t || "").match(/(\d{1,3}(?:\.\d{3})+|\d+),(\d{2})/);
+    return m ? parseFloat(m[1].replace(/\./g, "") + "." + m[2]) : 0;
+  }
+  function euro(x) {
+    var s = x.toFixed(2).split(".");
+    return s[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "," + s[1] + " €";
+  }
+
+  // Regeln: jede liefert für eine Kachel einen Badge-Text oder nichts. Weitere Badges hier anhängen.
+  var REGELN = [
+    function sparen(k) {
+      var del = k.querySelector("del.crossprice, del.osvs-uvp"), preisEl = k.querySelector(".prices .price");
+      if (!del || !preisEl) return "";
+      var uvp = betrag(del.textContent), t = preisEl.textContent;
+      var innen = preisEl.querySelector("del");
+      if (innen) t = t.replace(innen.textContent, "");
+      var preis = betrag(t);
+      if (!(uvp > preis && preis > 0)) return "";
+      return uvp < EIN.grenze
+        ? "Sie sparen " + Math.round((uvp - preis) / uvp * 100) + " %"
+        : "Sie sparen " + euro(uvp - preis);
+    }
+  ];
+
+  function kachel(k) {
+    var platz = k.querySelector(".thumb-image .prop-1-1");
+    if (!platz) return;
+    var texte = REGELN.map(function (r) { try { return r(k); } catch (x) { return ""; } }).filter(Boolean);
+    var schluessel = texte.join("|");
+    if ((k.getAttribute(MARKE) || "") === schluessel && (!schluessel || platz.querySelector(".osvb-liste"))) return; // unverändert
+    var alt = platz.querySelector(".osvb-liste");
+    if (alt) alt.parentNode.removeChild(alt);
+    k.setAttribute(MARKE, schluessel);
+    if (!texte.length) return;
+    var liste = document.createElement("div");
+    liste.className = "osvb-liste";
+    texte.forEach(function (t) {
+      var b = document.createElement("span");
+      b.className = "osvb"; b.textContent = t;
+      liste.appendChild(b);
+    });
+    platz.appendChild(liste);
+  }
+  function alle() {
+    [].forEach.call(document.querySelectorAll("article.cmp-product-thumb"), function (k) {
+      try { kachel(k); } catch (x) { /* Kachel bleibt wie sie ist */ }
+    });
+  }
+  // Kacheln kommen vom Server, per Filter/Blättern neu von Ceres oder später von der OSV-Suche;
+  // deshalb nach dem Start der Ceres-App und danach in festen Abständen nachsehen (billig, ändert nur bei Bedarf)
+  function start(versuch) {
+    var app = window.vueApp;
+    if (!(app && app._isMounted) && versuch < 40) { setTimeout(function () { start(versuch + 1); }, 100); return; }
+    alle();
+    setInterval(alle, 1000);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { start(0); });
+  else start(0);
+})();
+</script>
