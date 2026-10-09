@@ -8,25 +8,62 @@
           "type": "checkBox",
           "required": false,
           "label": "Badge „Sie sparen“ auf Kacheln mit Streichpreis zeigen",
-          "options": { "defaultValue": "true" }
+          "options": {
+            "defaultValue": "true"
+          }
         },
         "sparenGrenze": {
           "type": "text",
           "required": false,
           "label": "Grenze in Euro (UVP): darunter Prozent, ab dieser UVP Euro-Betrag",
-          "options": { "defaultValue": "100" }
+          "options": {
+            "defaultValue": "100"
+          }
         },
         "sparenTextProzent": {
           "type": "text",
           "required": false,
           "label": "Text unter der Grenze, {prozent} wird ersetzt (z. B. 30 %)",
-          "options": { "defaultValue": "Sie sparen {prozent}" }
+          "options": {
+            "defaultValue": "Sie sparen {prozent}"
+          }
         },
         "sparenTextEuro": {
           "type": "text",
           "required": false,
           "label": "Text ab der Grenze, {euro} wird ersetzt (z. B. 27,08 €)",
-          "options": { "defaultValue": "Sie sparen {euro}" }
+          "options": {
+            "defaultValue": "Sie sparen {euro}"
+          }
+        }
+      }
+    },
+    "Kachel": {
+      "label": "Kachel-Gestaltung",
+      "formFields": {
+        "kachelAktiv": {
+          "type": "checkBox",
+          "required": false,
+          "label": "Kacheln als Karte: Preis vorn, UVP dahinter, alles linksbündig, leere Sterne ausblenden",
+          "options": {
+            "defaultValue": "true"
+          }
+        },
+        "lieferAktiv": {
+          "type": "checkBox",
+          "required": false,
+          "label": "Lieferbarkeit unter dem Preis zeigen (bei Vorbestellung mit Erscheinungsdatum)",
+          "options": {
+            "defaultValue": "true"
+          }
+        },
+        "lieferTextVor": {
+          "type": "text",
+          "required": false,
+          "label": "Text bei Vorbestellung, {datum} wird ersetzt",
+          "options": {
+            "defaultValue": "Lieferbar ab {datum}"
+          }
         }
       }
     }

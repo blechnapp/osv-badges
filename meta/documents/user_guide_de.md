@@ -28,3 +28,9 @@ Badges auf den Artikelkacheln, auf Kategorieseiten und in den Ergebnissen der OS
 - 0.3.0: Band am unteren Bildrand statt Eckband (Energielabel oben links bleibt frei).
 - 0.2.0: Schräges Eckband statt Kästchen; Texte in der Konfiguration.
 - 0.1.0: Badge „Sie sparen“.
+
+## Kachel-Gestaltung (ab 0.5.0)
+
+- **Kacheln als Karte:** weiße Karte mit leichtem Schatten, Preis groß und blau vorn, durchgestrichene UVP klein dahinter, alles linksbündig. Der Artikelname ist am Rechner immer drei Zeilen hoch (länger wird mit „…“ gekürzt), damit Preise und Lieferbarkeit je Reihe auf einer Höhe stehen. Sterne ohne Bewertung werden ausgeblendet.
+- **Lieferbarkeit:** kleines Schild unter dem Preis, grün „Sofort versandfertig“, orange bei Vorbestellung „Lieferbar ab {datum}“ mit dem Erscheinungsdatum der Variante (Kalendertag, ohne Zeitzonen-Umrechnung). Gilt für Kategorieseiten; die Kacheln der OSV-Suche bekommen kein Schild.
+- Beides lässt sich in der Konfiguration unter „Kachel-Gestaltung“ einzeln abschalten.

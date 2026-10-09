@@ -3,9 +3,33 @@
 .cmp-product-thumb .prop-1-1 > .osvb-band { position: absolute; left: 0; bottom: 12px; max-width: 90%; z-index: 2; pointer-events: none; }
 .osvb-band .osvb { display: inline-block; max-width: 100%; padding: 5px 14px 5px 10px; border-radius: 0 4px 4px 0; background: #d4b062; color: #0c2a5e; font-weight: bold; font-size: 13px; line-height: 1.25; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 1px 4px rgba(0,0,0,.2); }
 @media (max-width: 575.98px) { .osvb-band .osvb { font-size: 13px; padding: 5px 12px 5px 9px; } }
+{% if kachel %}
+/* Kachel als Karte: Preis vorn und groß, UVP klein dahinter, alles linksbündig; Name immer drei Zeilen hoch, damit Preise je Reihe auf einer Höhe stehen */
+.cmp-product-thumb { background: #fff; border-radius: 10px; box-shadow: 0 1px 3px rgba(12,42,94,.08), 0 4px 14px rgba(12,42,94,.06); overflow: hidden; transition: transform .18s, box-shadow .18s; padding-bottom: 12px; }
+.cmp-product-thumb:hover { transform: translateY(-3px); box-shadow: 0 6px 22px rgba(12,42,94,.16); }
+.cmp-product-thumb .thumb-content { padding: 0 14px !important; text-align: left !important; }
+.cmp-product-thumb .thumb-title { margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; }
+@media (min-width: 576px) { .cmp-product-thumb .thumb-title { min-height: 4.2em; } }
+.cmp-product-thumb .thumb-meta { display: flex !important; flex-direction: column; align-items: flex-start !important; text-align: left !important; }
+.cmp-product-thumb .thumb-meta .prices { order: 1; display: flex !important; align-items: baseline; flex-wrap: wrap; gap: 0 8px; justify-content: flex-start !important; text-align: left !important; margin: 0 !important; }
+.cmp-product-thumb .prices .price { order: 1; font-size: 20px !important; font-weight: 700 !important; color: #0c2a5e !important; }
+.cmp-product-thumb .prices .price-view-port { order: 2; }
+.cmp-product-thumb .prices del.crossprice { font-size: 13px !important; color: #8a8a8a !important; }
+/* OSV-Suche: UVP steht im Preisfeld vor dem Preis, dort ebenfalls dahinter stellen */
+.cmp-product-thumb .prices .price.osvs-p { display: inline-flex; align-items: baseline; flex-wrap: wrap; gap: 0 8px; }
+.cmp-product-thumb .prices .price.osvs-p del.osvs-uvp { order: 2; font-size: 13px; font-weight: normal; color: #8a8a8a; }
+.cmp-product-thumb .thumb-meta .osvk-lief { order: 2; }
+.cmp-product-thumb .thumb-meta .feedback-stars-average { order: 3; margin: 4px 0 0 0 !important; transform: scale(.8); transform-origin: left center; }
+.cmp-product-thumb .feedback-stars-average.osvk-leer { display: none !important; }
+{% endif %}
+/* Lieferbarkeit: kleines Schild unter dem Preis; Platz ist reserviert, bevor Ceres die Kacheldaten liefert */
+.cmp-product-thumb .osvk-lief { display: inline-block; max-width: 100%; min-height: 1.35em; margin-top: 4px; padding: 3px 10px; border-radius: 12px; font-size: 12px; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-sizing: content-box; }
+.cmp-product-thumb .osvk-lief:not(:empty):before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; background: currentColor; }
+.osvk-lief.osvk-sofort { color: #2e7d32; background: #eef6ee; }
+.osvk-lief.osvk-vor { color: #b26a00; background: #fff3e0; font-weight: bold; }
 </style>
 <script>
-/* OSV Badges: Badges auf Artikelkacheln (Ceres-Kategorien und OSV-Suchergebnisse). Kein MutationObserver, kein Vue.component, kein ceresStore. */
+/* OSV Badges: Badges, Lieferbarkeit und Sterne auf Artikelkacheln (Ceres-Kategorien und OSV-Suchergebnisse). Kein MutationObserver, kein Vue.component, kein ceresStore. */
 (function () {
   var EIN = {{ einstellungJson | raw }};
   var MARKE = "data-osvb";
@@ -36,6 +60,40 @@
     }
   ];
 
+  // Lieferbarkeit: Ceres hält die Kacheldaten erst, wenn eine Kachel sichtbar wurde (lazy hydrate); bis dahin bleibt das Schild leer
+  function kachelDaten() {
+    var karte = {}, app = window.vueApp;
+    (function geh(c, tiefe) {
+      if (!c || tiefe > 40) return;
+      if (c.$options && c.$options.name === "category-item") {
+        var it = c.item;
+        if (it && it.variation) karte[it.variation.id] = it.variation;
+        return;
+      }
+      (c.$children || []).forEach(function (x) { geh(x, tiefe + 1); });
+    })(app, 0);
+    return karte;
+  }
+  function datum(r) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(r || ""); return m ? m[3] + "." + m[2] + "." + m[1] : ""; }
+  function liefer(k, daten) {
+    var p = k.querySelector(".thumb-meta .prices");
+    if (!p || k.classList.contains("osvs-kachel")) return; // Kacheln der OSV-Suche haben keine Ceres-Daten
+    var z = k.querySelector(".osvk-lief");
+    if (!z) { z = document.createElement("span"); z.className = "osvk-lief"; p.parentNode.insertBefore(z, p.nextSibling); }
+    var v = daten[k.getAttribute("data-testing")];
+    if (!v) return;
+    var a = v.availability || {}, name = (a.names && a.names.name) || "";
+    // Erscheinungsdatum als Kalendertag aus dem Text, ohne Zeitzonen-Umrechnung (sonst ein Tag zu früh)
+    var text = name.split(",")[0], art = "osvk-sofort";
+    if (a.id === 2 || /vorbestell/i.test(name)) { art = "osvk-vor"; var d = datum(v.releasedAt); text = d ? EIN.textVor.split("{datum}").join(d) : name; }
+    if (z.textContent !== text) z.textContent = text;
+    if (z.className !== "osvk-lief " + art) z.className = "osvk-lief " + art;
+  }
+  function sterne(k) {
+    var s = k.querySelector(".feedback-stars-average"), o = k.querySelector(".feedback-stars-overlay-wrap");
+    if (s && o) s.classList.toggle("osvk-leer", parseFloat(o.style.width || "0") === 0);
+  }
+
   function kachel(k) {
     var platz = k.querySelector(".thumb-image .prop-1-1");
     if (!platz) return;
@@ -55,8 +113,11 @@
     platz.appendChild(band);
   }
   function alle() {
+    var daten = EIN.liefer ? kachelDaten() : null;
     [].forEach.call(document.querySelectorAll("article.cmp-product-thumb"), function (k) {
-      try { kachel(k); } catch (x) { /* Kachel bleibt wie sie ist */ }
+      if (EIN.sparen) { try { kachel(k); } catch (x) { /* Kachel bleibt wie sie ist */ } }
+      if (daten) { try { liefer(k, daten); } catch (x) { } }
+      try { sterne(k); } catch (x) { }
     });
   }
   // Kacheln kommen vom Server, per Filter/Blättern neu von Ceres oder später von der OSV-Suche;

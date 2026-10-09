@@ -7,10 +7,18 @@ use Plenty\Plugin\Templates\Twig;
 
 class BadgeScript
 {
+    private function an(ConfigRepository $config, string $schluessel): bool
+    {
+        $wert = $config->get('OSVBadges.' . $schluessel, 'true');
+        return !($wert === 'false' || $wert === false || $wert === '0');
+    }
+
     public function call(Twig $twig, ConfigRepository $config): string
     {
-        $aktiv = $config->get('OSVBadges.sparenAktiv', 'true');
-        if ($aktiv === 'false' || $aktiv === false || $aktiv === '0') {
+        $sparen = $this->an($config, 'sparenAktiv');
+        $kachel = $this->an($config, 'kachelAktiv');
+        $liefer = $this->an($config, 'lieferAktiv');
+        if (!$sparen && !$kachel && !$liefer) {
             return '';
         }
         $grenze = (float)str_replace(',', '.', (string)$config->get('OSVBadges.sparenGrenze', '100'));
@@ -19,11 +27,16 @@ class BadgeScript
         }
         $textProzent = trim((string)$config->get('OSVBadges.sparenTextProzent', ''));
         $textEuro = trim((string)$config->get('OSVBadges.sparenTextEuro', ''));
+        $textVor = trim((string)$config->get('OSVBadges.lieferTextVor', ''));
         return $twig->render('OSVBadges::Containers.BadgeScript', [
+            'kachel' => $kachel,
             'einstellungJson' => json_encode([
+                'sparen' => $sparen,
+                'liefer' => $liefer,
                 'grenze' => $grenze,
                 'textProzent' => $textProzent !== '' ? $textProzent : 'Sie sparen {prozent}',
                 'textEuro' => $textEuro !== '' ? $textEuro : 'Sie sparen {euro}',
+                'textVor' => $textVor !== '' ? $textVor : 'Lieferbar ab {datum}',
             ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT),
         ]);
     }
