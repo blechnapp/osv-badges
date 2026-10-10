@@ -2,7 +2,7 @@
   "name": "OSVBadges",
   "namespace": "OSVBadges",
   "type": "general",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "license": "proprietary",
   "author": "OSV",
   "shortDescription": "Kategorieseite: Artikelkacheln (Badge „Sie sparen“, Karte, Lieferbarkeit, Sterne) und Filter.",

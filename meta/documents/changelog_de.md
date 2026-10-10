@@ -2,6 +2,10 @@
 
 Neueste Version oben. Jede Version ist ein Git-Tag; im Plugin-Set wird der Tag gewählt.
 
+## 0.6.2 (10.10.2026)
+
+- Doppelter Haken bei angehakten Filtern endgültig weg: Ceres setzt sein Symbol vor den Namen (.flex-grow-1::before), nicht vor das Feld
+
 ## 0.6.1 (09.10.2026)
 
 - Nach einem Filterklick lädt Ceres die Seite neu und sprang bisher nach oben; die Seite steht jetzt wieder an derselben Stelle
