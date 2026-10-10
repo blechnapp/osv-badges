@@ -2,6 +2,12 @@
 
 Neueste Version oben. Jede Version ist ein Git-Tag; im Plugin-Set wird der Tag gewählt.
 
+## 0.6.4 (10.10.2026)
+
+- Energielabel wieder oben links im Bild: 0.6.3 hatte den unteren Kachelteil zum Bezugspunkt gemacht, das Label rutschte über den Preis
+- Karten einer Reihe gleich hoch (z. B. Paket mit Zeile „1 Stück“)
+- Knopf „Zum Artikel“ unten in jeder Kachel am Rechner (ab 992 px; am Handy zeigt Ceres „In den Warenkorb“), Platz fest reserviert; in der Konfiguration abschaltbar, Text änderbar
+
 ## 0.6.3 (10.10.2026)
 
 - Seite verschiebt sich beim Scrollen nicht mehr: Ceres baut Kacheln beim Sichtbarwerden neu auf und warf dabei die Lieferzeile raus, die Kachel wurde kurz 26 px kürzer und wieder länger (betraf auch 0.5.x). Platz für die Lieferzeile jetzt fest per CSS reserviert. Gemessen am Handy beim Durchscrollen: Verschiebung durch Kacheln 0,23 → 0

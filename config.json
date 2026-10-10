@@ -64,6 +64,22 @@
           "options": {
             "defaultValue": "Lieferbar ab {datum}"
           }
+        },
+        "zumAktiv": {
+          "type": "checkBox",
+          "required": false,
+          "label": "Knopf zum Artikel unten in jeder Kachel (nur Rechner)",
+          "options": {
+            "defaultValue": "true"
+          }
+        },
+        "zumText": {
+          "type": "text",
+          "required": false,
+          "label": "Text des Knopfs",
+          "options": {
+            "defaultValue": "Zum Artikel"
+          }
         }
       }
     },

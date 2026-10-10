@@ -36,6 +36,8 @@ class BadgeScript
                 'sparen' => $sparen,
                 'liefer' => $liefer,
                 'filter' => $filter,
+                'zum' => $kachel && $this->an($config, 'zumAktiv'),
+                'textZum' => trim((string)$config->get('OSVBadges.zumText', '')) !== '' ? trim((string)$config->get('OSVBadges.zumText', '')) : 'Zum Artikel',
                 'filterSichtbar' => max(1, (int)$config->get('OSVBadges.filterSichtbar', '6')),
                 'filterSucheAb' => max(1, (int)$config->get('OSVBadges.filterSucheAb', '8')),
                 'grenze' => $grenze,
