@@ -2,6 +2,12 @@
 
 Neueste Version oben. Jede Version ist ein Git-Tag; im Plugin-Set wird der Tag gewählt.
 
+## 0.6.3 (10.10.2026)
+
+- Seite verschiebt sich beim Scrollen nicht mehr: Ceres baut Kacheln beim Sichtbarwerden neu auf und warf dabei die Lieferzeile raus, die Kachel wurde kurz 26 px kürzer und wieder länger (betraf auch 0.5.x). Platz für die Lieferzeile jetzt fest per CSS reserviert. Gemessen am Handy beim Durchscrollen: Verschiebung durch Kacheln 0,23 → 0
+- Filter bleiben zugeklappt, auch nachdem Ceres sie beim Sichtbarwerden neu aufbaut (Zustand in data-Attributen statt Klassen)
+- Rücksprung nach Filterklick stellt 8 Sekunden lang nach, falls die Seite sich noch verschiebt; hört auf, sobald der Besucher selbst scrollt
+
 ## 0.6.2 (10.10.2026)
 
 - Doppelter Haken bei angehakten Filtern endgültig weg: Ceres setzt sein Symbol vor den Namen (.flex-grow-1::before), nicht vor das Feld

@@ -18,7 +18,10 @@
 /* OSV-Suche: UVP steht im Preisfeld vor dem Preis, dort ebenfalls dahinter stellen */
 .cmp-product-thumb .prices .price.osvs-p { display: inline-flex; align-items: baseline; flex-wrap: wrap; gap: 0 8px; }
 .cmp-product-thumb .prices .price.osvs-p del.osvs-uvp { order: 2; font-size: 13px; font-weight: normal; color: #8a8a8a; }
-.cmp-product-thumb .thumb-meta .osvk-lief { order: 2; }
+.cmp-product-thumb .thumb-meta { position: relative; }
+/* Platz für die Lieferzeile fest reservieren: Ceres baut Kacheln beim Sichtbarwerden neu auf und wirft dabei eingefügte Elemente raus; so verschiebt sich nichts */
+.cmp-product-thumb:not(.osvs-kachel) .thumb-meta .prices { margin-bottom: 30px !important; }
+.cmp-product-thumb:not(.osvs-kachel) .thumb-meta .osvk-lief { position: absolute; left: 0; margin-top: 0 !important; }
 /* Sterne: das Feedback-Plugin legt Hintergrund und Füllung absolut übereinander und rechnet die Füllung in % der Zeilenbreite, deshalb feste Breite wie im Plugin (5 Sterne à 17px = 85px) */
 .cmp-product-thumb .thumb-meta .feedback-stars-average { order: 3; position: relative !important; left: 0 !important; width: 85px !important; height: 22px; margin: 6px 0 0 0 !important; display: block !important; align-self: flex-start; }
 .cmp-product-thumb .feedback-stars-average .feedback-count { position: absolute !important; left: 100% !important; right: auto !important; top: 50% !important; transform: translateY(-50%); margin: 0 0 0 6px !important; white-space: nowrap; font-size: 12px; color: #6b6b6b; }
@@ -46,9 +49,10 @@
 .widget-filter-base .form-check-label.bg-appearance .filter-badge { color: #0c2a5e !important; }
 .widget-filter-base .form-check-label::before, .widget-filter-base .form-check-label::after, .widget-filter-base .form-check-label .flex-grow-1::before { display: none !important; }
 .widget-filter-base .filter-badge { flex: 0 0 auto; white-space: nowrap; background: transparent !important; color: #8a93a3 !important; border: 0 !important; padding: 0 !important; font-size: 12px !important; min-width: 0 !important; height: auto !important; line-height: 1.5 !important; }
-.widget-filter-base .card.osvf-zu .osvf-mehr, .widget-filter-base .card .osvf-weg { display: none !important; }
-.widget-filter-base .card.osvf-sucht .osvf-mehr:not(.osvf-weg) { display: block !important; }
-.widget-filter-base .card.osvf-sucht .osvf-knopf { display: none; }
+/* Zustand in data-Attributen: Ceres setzt beim Neuaufbau die Klassen zurück, fremde Attribute bleiben */
+.widget-filter-base .card[data-osvf-zu] [data-osvf-mehr], .widget-filter-base .card [data-osvf-weg] { display: none !important; }
+.widget-filter-base .card[data-osvf-sucht] [data-osvf-mehr]:not([data-osvf-weg]) { display: block !important; }
+.widget-filter-base .card[data-osvf-sucht] .osvf-knopf { display: none; }
 .widget-filter-base .card .osvf-knopf { order: 999999; align-self: flex-start; margin: 4px 0 0 6px; padding: 0; border: 0; background: none; color: #0c2a5e; font-size: 13px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 {% endif %}
 </style>
@@ -112,6 +116,8 @@
     if (a.id === 2 || /vorbestell/i.test(name)) { art = "osvk-vor"; var d = datum(v.releasedAt); text = d ? EIN.textVor.split("{datum}").join(d) : name; }
     if (z.textContent !== text) z.textContent = text;
     if (z.className !== "osvk-lief " + art) z.className = "osvk-lief " + art;
+    var oben = (p.offsetTop + p.offsetHeight + 4) + "px";
+    if (z.style.top !== oben) z.style.top = oben;
   }
   function sterne(k) {
     var s = k.querySelector(".feedback-stars-average"), o = k.querySelector(".feedback-stars-overlay-wrap");
@@ -146,15 +152,14 @@
     var m = null;
     try { m = JSON.parse(sessionStorage.getItem(SPRUNG) || "null"); sessionStorage.removeItem(SPRUNG); } catch (x) { }
     if (!m || m.p !== location.pathname || Date.now() - m.t > 20000 || !(m.y > 0)) return;
-    // Bilder und Kacheln verändern die Höhe noch eine Weile: einige Male nachstellen, aufhören, sobald jemand selbst scrollt
+    // Bilder und Kacheln verändern die Höhe noch eine Weile: 8 s lang nachstellen, falls etwas die Seite wieder verschiebt; aufhören, sobald jemand selbst scrollt
     var n = 0, selbst = false;
     function halt() { selbst = true; }
-    window.addEventListener("wheel", halt, { passive: true, once: true });
-    window.addEventListener("touchstart", halt, { passive: true, once: true });
+    ["wheel", "touchstart", "keydown", "mousedown"].forEach(function (ev) { window.addEventListener(ev, halt, { passive: true, once: true }); });
     (function stell() {
       if (selbst) return;
-      window.scrollTo({ top: m.y, left: 0, behavior: "instant" });
-      if (++n < 8) setTimeout(stell, 250);
+      if (Math.abs((window.scrollY || 0) - m.y) > 4) window.scrollTo({ top: m.y, left: 0, behavior: "instant" });
+      if (++n < 40) setTimeout(stell, 200);
     })();
   }
   // Filter: häufigste Einträge zuerst (nur Anzeige-Reihenfolge, Ceres-Liste bleibt unberührt), Rest aufklappbar, Suchfeld bei langen Listen
@@ -170,17 +175,17 @@
       if (e.z.style.order !== String(rang)) e.z.style.order = rang;
       var weg = rang >= zeigen && !e.an;
       if (weg) mehr++;
-      if (e.z.classList.contains("osvf-mehr") !== weg) e.z.classList.toggle("osvf-mehr", weg);
+      if (e.z.hasAttribute("data-osvf-mehr") !== weg) { if (weg) e.z.setAttribute("data-osvf-mehr", ""); else e.z.removeAttribute("data-osvf-mehr"); }
     });
-    if (!c.hasAttribute("data-osvf")) { c.setAttribute("data-osvf", "1"); if (mehr) c.classList.add("osvf-zu"); }
+    if (!c.hasAttribute("data-osvf")) { c.setAttribute("data-osvf", "1"); if (mehr) c.setAttribute("data-osvf-zu", ""); }
     var knopf = c.querySelector(":scope > .osvf-knopf");
     if (mehr) {
       if (!knopf) {
         knopf = document.createElement("button"); knopf.type = "button"; knopf.className = "osvf-knopf";
-        knopf.addEventListener("click", function () { c.classList.toggle("osvf-zu"); filterKarte(c); });
+        knopf.addEventListener("click", function () { if (c.hasAttribute("data-osvf-zu")) c.removeAttribute("data-osvf-zu"); else c.setAttribute("data-osvf-zu", ""); filterKarte(c); });
         c.appendChild(knopf);
       }
-      var t = c.classList.contains("osvf-zu") ? "Alle " + zeilen.length + " anzeigen" : "Weniger anzeigen";
+      var t = c.hasAttribute("data-osvf-zu") ? "Alle " + zeilen.length + " anzeigen" : "Weniger anzeigen";
       if (knopf.textContent !== t) knopf.textContent = t;
     } else if (knopf) knopf.parentNode.removeChild(knopf);
     var feld = c.querySelector(":scope > .osvf-suche");
@@ -196,10 +201,10 @@
   }
   function suchen(c, wort) {
     var w = wort.trim().toLowerCase();
-    c.classList.toggle("osvf-sucht", !!w);
+    if (w) c.setAttribute("data-osvf-sucht", ""); else c.removeAttribute("data-osvf-sucht");
     [].forEach.call(c.querySelectorAll(":scope > .form-check-wrapper"), function (z) {
       var treffer = !w || z.textContent.toLowerCase().indexOf(w) >= 0;
-      if (z.classList.contains("osvf-weg") === treffer) z.classList.toggle("osvf-weg", !treffer);
+      if (z.hasAttribute("data-osvf-weg") === treffer) { if (treffer) z.removeAttribute("data-osvf-weg"); else z.setAttribute("data-osvf-weg", ""); }
     });
   }
   function filter() {
