@@ -2,6 +2,10 @@
 
 Neueste Version oben. Jede Version ist ein Git-Tag; im Plugin-Set wird der Tag gewählt.
 
+## 0.6.5 (10.10.2026)
+
+- Nach einem Filterklick springt die Seite an den Anfang der neuen Artikelliste (Sortierzeile oben im Bild, Filter links daneben) statt an die alte Stelle; Ceres allein springt ganz nach oben (Kay: an der alten Stelle landet man mitten in der neuen Liste)
+
 ## 0.6.4 (10.10.2026)
 
 - Energielabel wieder oben links im Bild: 0.6.3 hatte den unteren Kachelteil zum Bezugspunkt gemacht, das Label rutschte über den Preis

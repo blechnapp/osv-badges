@@ -164,23 +164,29 @@
     band.appendChild(b);
     platz.appendChild(band);
   }
-  // Filterklick lädt bei Ceres die ganze Seite neu und landet oben: Position merken und nach dem Laden wiederherstellen
+  // Filterklick lädt bei Ceres die ganze Seite neu und landet ganz oben. Nach dem Laden an den Anfang der (neuen) Artikelliste springen:
+  // Sortierzeile oben im Bild, links daneben die Filter. Merkt sich nur, dass gefiltert wurde.
   var SPRUNG = "osvf-scroll";
   function sprungMerken(e) {
     if (!e.target.closest || !e.target.closest(".widget-filter-base .form-check-label, .widget-filter-base .form-check-input")) return;
-    try { sessionStorage.setItem(SPRUNG, JSON.stringify({ y: window.scrollY || 0, p: location.pathname, t: Date.now() })); } catch (x) { }
+    try { sessionStorage.setItem(SPRUNG, JSON.stringify({ p: location.pathname, t: Date.now() })); } catch (x) { }
+  }
+  function listenAnfang() {
+    var el = document.querySelector(".widget-item-sorting") || document.querySelector(".product-list");
+    return el ? Math.max(0, Math.round(el.getBoundingClientRect().top + (window.scrollY || 0) - 60)) : null;
   }
   function sprungZurueck() {
     var m = null;
     try { m = JSON.parse(sessionStorage.getItem(SPRUNG) || "null"); sessionStorage.removeItem(SPRUNG); } catch (x) { }
-    if (!m || m.p !== location.pathname || Date.now() - m.t > 20000 || !(m.y > 0)) return;
-    // Bilder und Kacheln verändern die Höhe noch eine Weile: 8 s lang nachstellen, falls etwas die Seite wieder verschiebt; aufhören, sobald jemand selbst scrollt
+    if (!m || m.p !== location.pathname || Date.now() - m.t > 20000) return;
+    // Bilder und Kacheln verändern die Höhe noch eine Weile: 8 s lang nachstellen; aufhören, sobald jemand selbst scrollt
     var n = 0, selbst = false;
     function halt() { selbst = true; }
     ["wheel", "touchstart", "keydown", "mousedown"].forEach(function (ev) { window.addEventListener(ev, halt, { passive: true, once: true }); });
     (function stell() {
       if (selbst) return;
-      if (Math.abs((window.scrollY || 0) - m.y) > 4) window.scrollTo({ top: m.y, left: 0, behavior: "instant" });
+      var ziel = listenAnfang();
+      if (ziel !== null && Math.abs((window.scrollY || 0) - ziel) > 4) window.scrollTo({ top: ziel, left: 0, behavior: "instant" });
       if (++n < 40) setTimeout(stell, 200);
     })();
   }

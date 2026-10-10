@@ -40,5 +40,5 @@ Badges auf den Artikelkacheln, auf Kategorieseiten und in den Ergebnissen der OS
 - Die Ceres-Filter (Hersteller, Motiv, Größe …) erscheinen als schlanke Liste ohne Kästen. Einträge mit den meisten Artikeln stehen oben; je Filter sind 6 sichtbar, der Rest klappt über „Alle … anzeigen“ auf. Angehakte Einträge bleiben immer sichtbar.
 - Ab 8 Einträgen gibt es ein Suchfeld („Motiv suchen …“).
 - Die Reihenfolge ändert nur die Anzeige; die Ceres-Filter selbst bleiben unverändert.
-- Ein Filterklick lädt die Seite neu (Ceres); das Plugin merkt sich die Scrollposition und stellt sie nach dem Laden wieder her.
+- Ein Filterklick lädt die Seite neu (Ceres); nach dem Laden springt das Plugin an den Anfang der neuen Artikelliste (Sortierzeile), nicht ganz nach oben.
 - Konfiguration „Filter auf Kategorieseiten“: an/aus, Anzahl sichtbarer Einträge, Suchfeld ab.
