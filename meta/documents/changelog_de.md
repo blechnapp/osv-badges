@@ -2,6 +2,10 @@
 
 Neueste Version oben. Jede Version ist ein Git-Tag; im Plugin-Set wird der Tag gewählt.
 
+## 0.7.0 (19.10.2026)
+
+- Kacheln der OSV-Suche wie auf den Kategorieseiten: Lieferschild und am Rechner „Zum Artikel“ (statt des eigenen Knopfs der Suche). Gilt nur für Suchkacheln mit der Markierung osvk-voll (ab OSVSuche 0.10.0, liefert die Lieferdaten mit); ältere Suchkacheln bleiben unverändert. Kategorieseiten unverändert
+
 ## 0.6.5 (10.10.2026)
 
 - Nach einem Filterklick springt die Seite an den Anfang der neuen Artikelliste (Sortierzeile oben im Bild, Filter links daneben) statt an die alte Stelle; Ceres allein springt ganz nach oben (Kay: an der alten Stelle landet man mitten in der neuen Liste)

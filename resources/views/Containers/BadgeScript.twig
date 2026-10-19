@@ -19,14 +19,19 @@
 .cmp-product-thumb .prices .price.osvs-p { display: inline-flex; align-items: baseline; flex-wrap: wrap; gap: 0 8px; }
 .cmp-product-thumb .prices .price.osvs-p del.osvs-uvp { order: 2; font-size: 13px; font-weight: normal; color: #8a8a8a; }
 /* Platz für die Lieferzeile fest reservieren: Ceres baut Kacheln beim Sichtbarwerden neu auf und wirft dabei eingefügte Elemente raus; so verschiebt sich nichts */
-.cmp-product-thumb:not(.osvs-kachel) .thumb-meta .prices { margin-bottom: 30px !important; }
-.cmp-product-thumb:not(.osvs-kachel) .thumb-meta .osvk-lief { position: absolute; margin-top: 0 !important; }
+/* Kacheln der OSV-Suche nur, wenn sie mit osvk-voll markiert sind (ab OSVSuche 0.10.0, liefert die Lieferdaten mit) */
+.cmp-product-thumb:not(.osvs-kachel) .thumb-meta .prices, .cmp-product-thumb.osvk-voll .thumb-meta .prices { margin-bottom: 30px !important; }
+.cmp-product-thumb:not(.osvs-kachel) .thumb-meta .osvk-lief, .cmp-product-thumb.osvk-voll .thumb-meta .osvk-lief { position: absolute; margin-top: 0 !important; }
 /* Karten einer Reihe gleich hoch: die Rasterzelle ist schon so hoch wie die Reihe, die Karte füllt sie aus */
 .product-list > li { display: flex; flex-direction: column; }
 .product-list > li > .cmp-product-thumb { flex: 1 1 auto; }
 /* Knopf „Zum Artikel“ am Rechner (am Handy zeigt Ceres „In den Warenkorb“); Platz fest reserviert, Knopf unten bündig */
 @media (min-width: 992px) {
   .cmp-product-thumb:not(.osvs-kachel) { padding-bottom: 62px !important; }
+  /* Eigene Regel: Browser ohne :has() verwerfen sonst auch die Regel für die Kategoriekacheln (nicht zusammenlegen) */
+  .cmp-product-thumb.osvk-voll:has(> .osvk-zum) { padding-bottom: 62px !important; }
+  /* OSV-Suche: deren eigener Knopf weicht am Rechner „Zum Artikel“ (nur wenn der Knopf da ist, also „Zum Artikel“ nicht abgeschaltet) */
+  .cmp-product-thumb.osvk-voll:has(> .osvk-zum) .osvs-ansehen { display: none !important; }
   .cmp-product-thumb .osvk-zum { position: absolute; left: 14px; right: 14px; bottom: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; height: 36px; border: 1.5px solid #0c2a5e; border-radius: 6px; color: #0c2a5e !important; font-size: 14px; font-weight: 600; text-decoration: none !important; background: #fff; transition: background .15s, color .15s; }
   .cmp-product-thumb .osvk-zum:hover { background: #0c2a5e; color: #fff !important; }
 }
@@ -114,10 +119,13 @@
   function datum(r) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(r || ""); return m ? m[3] + "." + m[2] + "." + m[1] : ""; }
   function liefer(k, daten) {
     var p = k.querySelector(".thumb-meta .prices");
-    if (!p || k.classList.contains("osvs-kachel")) return; // Kacheln der OSV-Suche haben keine Ceres-Daten
+    var suche = k.classList.contains("osvs-kachel");
+    if (!p || (suche && !k.classList.contains("osvk-voll"))) return; // ältere OSV-Suche: keine Lieferdaten
     var z = k.querySelector(".osvk-lief");
     if (!z) { z = document.createElement("span"); z.className = "osvk-lief"; p.parentNode.insertBefore(z, p.nextSibling); }
-    var v = daten[k.getAttribute("data-testing")];
+    // OSV-Suche: Lieferdaten stehen in data-Attributen der Kachel (gleiche Felder wie die Ceres-Kacheldaten)
+    var v = !suche ? daten[k.getAttribute("data-testing")] : !k.hasAttribute("data-osvk-avid") ? null :
+      { availability: { id: +k.getAttribute("data-osvk-avid"), names: { name: k.getAttribute("data-osvk-av") || "" } }, releasedAt: k.getAttribute("data-osvk-rel") || "" };
     if (!v) return;
     var a = v.availability || {}, name = (a.names && a.names.name) || "";
     // Erscheinungsdatum als Kalendertag aus dem Text, ohne Zeitzonen-Umrechnung (sonst ein Tag zu früh)
@@ -132,7 +140,7 @@
     if (z.style.left !== links) z.style.left = links;
   }
   function zumArtikel(k) {
-    if (k.classList.contains("osvs-kachel") || k.querySelector(":scope > .osvk-zum")) return;
+    if ((k.classList.contains("osvs-kachel") && !k.classList.contains("osvk-voll")) || k.querySelector(":scope > .osvk-zum")) return;
     var link = k.querySelector("a.thumb-title") || k.querySelector(".thumb-image a[href]");
     if (!link || !link.getAttribute("href")) return;
     var a = document.createElement("a");
