@@ -46,6 +46,8 @@
 .cmp-product-thumb .osvk-lief:not(:empty):before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; background: currentColor; }
 .osvk-lief.osvk-sofort { color: #2e7d32; background: #eef6ee; }
 .osvk-lief.osvk-vor { color: #b26a00; background: #fff3e0; font-weight: bold; }
+.osvk-lief.osvk-anfrage { color: #1f5fa8; background: #e8f0fa; }
+.osvk-lief.osvk-grau { color: #5f6673; background: #f0f1f3; }
 {% if filter %}
 /* Filter auf Kategorieseiten: schlanke Liste ohne Kästen, Trennlinien, häufigste Einträge zuerst, Rest aufklappbar */
 .widget-filter-base .card { display: flex !important; flex-direction: column; height: auto !important; max-height: none !important; overflow: visible !important; border: 0 !important; border-bottom: 1px solid #e6e9ef !important; border-radius: 0 !important; box-shadow: none !important; background: transparent !important; padding: 18px 2px 14px 2px !important; margin: 0 !important; }
@@ -128,9 +130,12 @@
       { availability: { id: +k.getAttribute("data-osvk-avid"), names: { name: k.getAttribute("data-osvk-av") || "" } }, releasedAt: k.getAttribute("data-osvk-rel") || "" };
     if (!v) return;
     var a = v.availability || {}, name = (a.names && a.names.name) || "";
+    // Farbe je Lieferbarkeit (IDs gelesen 22.10.2026): grün 1 sofort versandfertig, 3 eMail-Versand; orange 2 Vorbestellung; blau 5 auf Anfrage; sonst grau
+    var id = +a.id, text = name.split(",")[0], art = "osvk-grau";
+    if (id === 1 || id === 3) art = "osvk-sofort";
+    else if (id === 5 || /anfrage/i.test(name)) art = "osvk-anfrage";
     // Erscheinungsdatum als Kalendertag aus dem Text, ohne Zeitzonen-Umrechnung (sonst ein Tag zu früh)
-    var text = name.split(",")[0], art = "osvk-sofort";
-    if (a.id === 2 || /vorbestell/i.test(name)) { art = "osvk-vor"; var d = datum(v.releasedAt); text = d ? EIN.textVor.split("{datum}").join(d) : name; }
+    if (id === 2 || /vorbestell/i.test(name)) { art = "osvk-vor"; var d = datum(v.releasedAt); text = d ? EIN.textVor.split("{datum}").join(d) : name; }
     if (z.textContent !== text) z.textContent = text;
     if (z.className !== "osvk-lief " + art) z.className = "osvk-lief " + art;
     // Lage relativ zur Kachel (Bezugspunkt der absoluten Lage), direkt unter dem Preis
