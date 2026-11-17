@@ -20,6 +20,14 @@
             "defaultValue": "Mit Code {code} {rabatt} sparen"
           }
         },
+        "gutscheinTextVersand": {
+          "type": "text",
+          "required": false,
+          "label": "Etikett bei Gutschein „Versand“ (versandkostenfrei), {code} wird ersetzt",
+          "options": {
+            "defaultValue": "Mit Code {code} versandkostenfrei"
+          }
+        },
         "gutscheinZeile": {
           "type": "text",
           "required": false,

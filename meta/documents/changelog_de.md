@@ -2,6 +2,12 @@
 
 Neueste Version oben. Jede Version ist ein Git-Tag; im Plugin-Set wird der Tag gewählt.
 
+## 0.8.1 (17.11.2026)
+
+- Gutschein mit Rabatt „Versand“: eigenes Etikett „Mit Code {code} versandkostenfrei“ (einstellbar), statt „… sparen“
+- Ende der Kampagne gilt einschließlich des letzten Tags (Plenty speichert nur das Datum)
+- Etiketten brechen bei langem Text in eine zweite Zeile um, statt abgeschnitten zu werden
+
 ## 0.8.0 (17.11.2026)
 
 - Gutschein-Aktion: In der Konfiguration (Reiter „Gutschein-Aktion“) die ID der Gutscheinkampagne eintragen. Laufzeit, Rabatt, Code und Artikel kommen aus der Kampagne. Artikel der Kampagne bekommen auf Kacheln (Kategorie, Suche) und auf dem großen Artikelbild das Etikett „Mit Code … sparen“, auf der Artikelseite darunter eine Zeile mit Enddatum und „Nicht mit anderen Gutscheinen kombinierbar“. Das Gutschein-Etikett hat Vorrang vor „Sie sparen“

@@ -78,6 +78,10 @@ class BadgeScript
         }
         $start = strtotime((string)($k['startsAt'] ?? '')) ?: 0;
         $ende = strtotime((string)($k['endsAt'] ?? '')) ?: 0;
+        // Plenty speichert das Ende als Tag (Backend zeigt nur das Datum): 00:00 heißt „bis einschließlich dieses Tags“
+        if ($ende && date('H:i:s', $ende) === '00:00:00') {
+            $ende += 86399;
+        }
         $grund = ($k['concept'] ?? 'single_code') !== 'single_code' ? 'ein Code je Kunde' : (count($codes) !== 1 ? count($codes) . ' Codes' : (!count($artikel) ? 'keine Artikel' : (!$ende ? 'kein Ende' : '')));
         if ($grund !== '') {
             return ['leer' => true, 'grund' => $grund, 'felder' => implode(',', array_keys($k))];
@@ -92,6 +96,7 @@ class BadgeScript
         return [
             'c' => $codes[0],
             'r' => $rabatt,
+            'art' => (string)($k['discountType'] ?? ''),
             's' => $start * 1000,
             'e' => $ende * 1000,
             'ende' => date('d.m.Y', $ende) . (date('H:i', $ende) !== '00:00' && date('H:i', $ende) !== '23:59' ? ', ' . date('H:i', $ende) . ' Uhr' : ''),
@@ -126,6 +131,7 @@ class BadgeScript
         $textEuro = trim((string)$config->get('OSVBadges.sparenTextEuro', ''));
         $textVor = trim((string)$config->get('OSVBadges.lieferTextVor', ''));
         $textGutschein = trim((string)$config->get('OSVBadges.gutscheinText', ''));
+        $textVersand = trim((string)$config->get('OSVBadges.gutscheinTextVersand', ''));
         $zeileGutschein = trim((string)$config->get('OSVBadges.gutscheinZeile', ''));
         return $twig->render('OSVBadges::Containers.BadgeScript', [
             'kachel' => $kachel,
@@ -145,6 +151,7 @@ class BadgeScript
                 'gutscheine' => $gutscheine,
                 'gutscheinDiagnose' => $diagnose,
                 'textGutschein' => $textGutschein !== '' ? $textGutschein : 'Mit Code {code} {rabatt} sparen',
+                'textVersand' => $textVersand !== '' ? $textVersand : 'Mit Code {code} versandkostenfrei',
                 'zeileGutschein' => $zeileGutschein !== '' ? $zeileGutschein : 'Gutschein {code} gilt bis {ende}. Nicht mit anderen Gutscheinen kombinierbar.',
             ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT),
         ]);
