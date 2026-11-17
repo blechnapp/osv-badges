@@ -47,13 +47,17 @@ class BadgeScript
                         }
                         // Codes und Bezüge sind Beziehungen, toArray() liefert sie nur, wenn sie geladen sind: einzeln abrufen
                         $daten = $kampagne->toArray();
-                        foreach (['codes', 'references'] as $feld) {
-                            try {
-                                $wert = $kampagne->$feld;
-                                $daten[$feld] = is_object($wert) ? $wert->toArray() : (is_array($wert) ? $wert : []);
-                            } catch (\Throwable $fehler) {
-                                $daten[$feld . 'Fehler'] = substr($fehler->getMessage(), 0, 120);
-                            }
+                        try {
+                            $codes = $kampagne->codes;
+                            $daten['codes'] = is_object($codes) ? $codes->toArray() : (is_array($codes) ? $codes : []);
+                        } catch (\Throwable $fehler) {
+                            $daten['codesFehler'] = substr($fehler->getMessage(), 0, 120);
+                        }
+                        try {
+                            $bezuege = $kampagne->references;
+                            $daten['references'] = is_object($bezuege) ? $bezuege->toArray() : (is_array($bezuege) ? $bezuege : []);
+                        } catch (\Throwable $fehler) {
+                            $daten['referencesFehler'] = substr($fehler->getMessage(), 0, 120);
                         }
                         return $daten;
                     });

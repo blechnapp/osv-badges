@@ -2,6 +2,10 @@
 
 Neueste Version oben. Jede Version ist ein Git-Tag; im Plugin-Set wird der Tag gewählt.
 
+## 0.8.3 (17.11.2026)
+
+- Codes und Bezüge direkt abrufen statt über einen Variablennamen (0.8.2 kam in Set 78 nicht an, vermutlich vom Plenty-Build abgelehnt)
+
 ## 0.8.2 (17.11.2026)
 
 - Codes und Artikel der Kampagne werden ausdrücklich nachgeladen (in Set 78 kam die Kampagne ohne sie an: „0 Codes“)
