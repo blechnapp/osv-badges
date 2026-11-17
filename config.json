@@ -1,6 +1,35 @@
 {
   "formatVersion": 1,
   "menu": {
+    "Gutschein": {
+      "label": "Gutschein-Aktion",
+      "formFields": {
+        "gutscheinIds": {
+          "type": "text",
+          "required": false,
+          "label": "ID der Gutscheinkampagne (mehrere mit Komma). Laufzeit, Rabatt und Artikel kommen aus der Kampagne. Leer = aus",
+          "options": {
+            "defaultValue": ""
+          }
+        },
+        "gutscheinText": {
+          "type": "text",
+          "required": false,
+          "label": "Etikett auf Kachel und Artikelbild, {code} und {rabatt} werden ersetzt",
+          "options": {
+            "defaultValue": "Mit Code {code} {rabatt} sparen"
+          }
+        },
+        "gutscheinZeile": {
+          "type": "text",
+          "required": false,
+          "label": "Zeile unter dem Artikelbild, {code}, {rabatt} und {ende} werden ersetzt",
+          "options": {
+            "defaultValue": "Gutschein {code} gilt bis {ende}. Nicht mit anderen Gutscheinen kombinierbar."
+          }
+        }
+      }
+    },
     "Sparen": {
       "label": "Badge „Sie sparen“",
       "formFields": {

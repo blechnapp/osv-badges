@@ -2,11 +2,105 @@
 
 namespace OSVBadges\Containers;
 
+use Plenty\Modules\Authorization\Services\AuthHelper;
+use Plenty\Modules\Order\Coupon\Campaign\Contracts\CouponCampaignRepositoryContract;
+use Plenty\Plugin\CachingRepository;
 use Plenty\Plugin\ConfigRepository;
 use Plenty\Plugin\Templates\Twig;
 
 class BadgeScript
 {
+    const CACHE_MINUTEN = 10;
+
+    /**
+     * Gutscheinkampagnen aus der Konfiguration lesen (nur lesend) und auf das kürzen, was die Seite braucht:
+     * Code, Rabatt, Laufzeit, Artikel-IDs. Ob die Aktion gerade läuft, entscheidet das Skript im Browser
+     * anhand von Start und Ende, damit auch zwischengespeicherte Seiten pünktlich umschalten.
+     * Kampagnen ohne gemeinsamen Code (ein Code je Kunde) oder ohne Artikel werden übergangen.
+     */
+    private function gutscheine(string $ids, array &$diagnose): array
+    {
+        $liste = [];
+        $zahlen = [];
+        foreach (explode(',', $ids) as $teil) {
+            $zahl = (int)trim($teil);
+            if ($zahl > 0 && !in_array($zahl, $zahlen, true)) {
+                $zahlen[] = $zahl;
+            }
+        }
+        foreach ($zahlen as $id) {
+            /** @var CachingRepository $cache */
+            $cache = pluginApp(CachingRepository::class);
+            $schluessel = 'OSVBadges_gutschein_' . $id;
+            $eintrag = $cache->get($schluessel);
+            if (!is_array($eintrag)) {
+                $eintrag = ['leer' => true];
+                try {
+                    /** @var AuthHelper $auth */
+                    $auth = pluginApp(AuthHelper::class);
+                    $k = $auth->processUnguarded(function () use ($id) {
+                        /** @var CouponCampaignRepositoryContract $repo */
+                        $repo = pluginApp(CouponCampaignRepositoryContract::class);
+                        $kampagne = $repo->findById($id);
+                        return $kampagne ? $kampagne->toArray() : null;
+                    });
+                    if (is_array($k)) {
+                        $eintrag = $this->kampagne($k);
+                    }
+                } catch (\Throwable $fehler) {
+                    $eintrag = ['leer' => true, 'fehler' => substr($fehler->getMessage(), 0, 200)];
+                }
+                $cache->put($schluessel, $eintrag, self::CACHE_MINUTEN);
+            }
+            if (empty($eintrag['leer'])) {
+                $liste[] = $eintrag;
+                $diagnose[] = ['id' => $id, 'ok' => true, 'von' => $eintrag['von'] ?? '', 'bis' => $eintrag['bis'] ?? ''];
+            } else {
+                $diagnose[] = ['id' => $id, 'ok' => false, 'grund' => $eintrag['grund'] ?? ($eintrag['fehler'] ?? 'nicht gefunden'), 'felder' => $eintrag['felder'] ?? ''];
+            }
+        }
+        return $liste;
+    }
+
+    private function kampagne(array $k): array
+    {
+        $codes = [];
+        foreach (($k['codes'] ?? []) as $c) {
+            if (empty($c['disable']) && empty($c['consumed']) && !empty($c['code'])) {
+                $codes[] = (string)$c['code'];
+            }
+        }
+        $artikel = [];
+        foreach (($k['references'] ?? []) as $r) {
+            if (($r['referenceType'] ?? '') === 'item' && (int)($r['value'] ?? 0) > 0) {
+                $artikel[] = (int)$r['value'];
+            }
+        }
+        $start = strtotime((string)($k['startsAt'] ?? '')) ?: 0;
+        $ende = strtotime((string)($k['endsAt'] ?? '')) ?: 0;
+        $grund = ($k['concept'] ?? 'single_code') !== 'single_code' ? 'ein Code je Kunde' : (count($codes) !== 1 ? count($codes) . ' Codes' : (!count($artikel) ? 'keine Artikel' : (!$ende ? 'kein Ende' : '')));
+        if ($grund !== '') {
+            return ['leer' => true, 'grund' => $grund, 'felder' => implode(',', array_keys($k))];
+        }
+        $wert = (float)($k['value'] ?? 0);
+        $rabatt = '';
+        if (($k['discountType'] ?? '') === 'percent' && $wert > 0) {
+            $rabatt = str_replace('.', ',', rtrim(rtrim(number_format($wert, 2, '.', ''), '0'), '.')) . ' %';
+        } elseif (($k['discountType'] ?? '') === 'fixed' && $wert > 0) {
+            $rabatt = number_format($wert, 2, ',', '.') . ' €';
+        }
+        return [
+            'c' => $codes[0],
+            'r' => $rabatt,
+            's' => $start * 1000,
+            'e' => $ende * 1000,
+            'ende' => date('d.m.Y', $ende) . (date('H:i', $ende) !== '00:00' && date('H:i', $ende) !== '23:59' ? ', ' . date('H:i', $ende) . ' Uhr' : ''),
+            'i' => array_values(array_unique($artikel)),
+            'von' => (string)($k['startsAt'] ?? ''),
+            'bis' => (string)($k['endsAt'] ?? ''),
+        ];
+    }
+
     private function an(ConfigRepository $config, string $schluessel): bool
     {
         $wert = $config->get('OSVBadges.' . $schluessel, 'true');
@@ -19,7 +113,9 @@ class BadgeScript
         $kachel = $this->an($config, 'kachelAktiv');
         $liefer = $this->an($config, 'lieferAktiv');
         $filter = $this->an($config, 'filterAktiv');
-        if (!$sparen && !$kachel && !$liefer && !$filter) {
+        $diagnose = [];
+        $gutscheine = $this->gutscheine((string)$config->get('OSVBadges.gutscheinIds', ''), $diagnose);
+        if (!$sparen && !$kachel && !$liefer && !$filter && !count($gutscheine)) {
             return '';
         }
         $grenze = (float)str_replace(',', '.', (string)$config->get('OSVBadges.sparenGrenze', '100'));
@@ -29,6 +125,8 @@ class BadgeScript
         $textProzent = trim((string)$config->get('OSVBadges.sparenTextProzent', ''));
         $textEuro = trim((string)$config->get('OSVBadges.sparenTextEuro', ''));
         $textVor = trim((string)$config->get('OSVBadges.lieferTextVor', ''));
+        $textGutschein = trim((string)$config->get('OSVBadges.gutscheinText', ''));
+        $zeileGutschein = trim((string)$config->get('OSVBadges.gutscheinZeile', ''));
         return $twig->render('OSVBadges::Containers.BadgeScript', [
             'kachel' => $kachel,
             'filter' => $filter,
@@ -44,6 +142,10 @@ class BadgeScript
                 'textProzent' => $textProzent !== '' ? $textProzent : 'Sie sparen {prozent}',
                 'textEuro' => $textEuro !== '' ? $textEuro : 'Sie sparen {euro}',
                 'textVor' => $textVor !== '' ? $textVor : 'Lieferbar ab {datum}',
+                'gutscheine' => $gutscheine,
+                'gutscheinDiagnose' => $diagnose,
+                'textGutschein' => $textGutschein !== '' ? $textGutschein : 'Mit Code {code} {rabatt} sparen',
+                'zeileGutschein' => $zeileGutschein !== '' ? $zeileGutschein : 'Gutschein {code} gilt bis {ende}. Nicht mit anderen Gutscheinen kombinierbar.',
             ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT),
         ]);
     }

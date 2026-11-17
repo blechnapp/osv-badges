@@ -2,6 +2,12 @@
 
 Neueste Version oben. Jede Version ist ein Git-Tag; im Plugin-Set wird der Tag gewählt.
 
+## 0.8.0 (17.11.2026)
+
+- Gutschein-Aktion: In der Konfiguration (Reiter „Gutschein-Aktion“) die ID der Gutscheinkampagne eintragen. Laufzeit, Rabatt, Code und Artikel kommen aus der Kampagne. Artikel der Kampagne bekommen auf Kacheln (Kategorie, Suche) und auf dem großen Artikelbild das Etikett „Mit Code … sparen“, auf der Artikelseite darunter eine Zeile mit Enddatum und „Nicht mit anderen Gutscheinen kombinierbar“. Das Gutschein-Etikett hat Vorrang vor „Sie sparen“
+- Ein- und Ausschalten nach Start und Ende der Kampagne im Browser, auch bei zwischengespeicherten Seiten pünktlich. Kampagnen werden 10 Minuten zwischengespeichert
+- Nur Kampagnen mit einem gemeinsamen Code und Artikeln als Bezug; Kategorien als Bezug werden noch nicht ausgewertet
+
 ## 0.7.1 (22.10.2026)
 
 - Lieferschild nach Lieferbarkeit eingefärbt: grün nur noch „Sofort versandfertig“ und eMail-Versand (Gutscheine), orange Vorbestellung wie bisher, blau „Lieferzeit auf Anfrage“, grau alle übrigen. Bisher war jede Lieferbarkeit außer Vorbestellung grün, auch „auf Anfrage“

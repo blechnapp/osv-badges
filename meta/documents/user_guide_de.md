@@ -2,6 +2,10 @@
 
 Badges auf den Artikelkacheln, auf Kategorieseiten und in den Ergebnissen der OSV-Suche.
 
+## Gutschein-Aktion (ab 0.8.0)
+
+Konfiguration, Reiter „Gutschein-Aktion“: ID der Gutscheinkampagne eintragen (mehrere mit Komma). Code, Rabatt, Start, Ende und die Artikel liest das Plugin aus der Kampagne. Die Artikel bekommen auf Kacheln und auf dem Artikelbild das Etikett „Mit Code {code} {rabatt} sparen“, auf der Artikelseite darunter eine Zeile mit Enddatum. Vor dem Start und nach dem Ende verschwindet alles von selbst. Texte sind einstellbar. Voraussetzung: Kampagne mit einem gemeinsamen Code, Artikel als Bezug (Kategorien werden noch nicht ausgewertet). Änderungen an der Kampagne erscheinen nach höchstens 10 Minuten.
+
 ## Badge „Sie sparen“
 - Erscheint auf jeder Kachel mit Streichpreis, also wenn der Shoppreis unter der Shop-UVP liegt
   (Ceres zeigt den Streichpreis nur dann).
