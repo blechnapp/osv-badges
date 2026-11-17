@@ -2,6 +2,10 @@
 
 Neueste Version oben. Jede Version ist ein Git-Tag; im Plugin-Set wird der Tag gewählt.
 
+## 0.8.2 (17.11.2026)
+
+- Codes und Artikel der Kampagne werden ausdrücklich nachgeladen (in Set 78 kam die Kampagne ohne sie an: „0 Codes“)
+
 ## 0.8.1 (17.11.2026)
 
 - Gutschein mit Rabatt „Versand“: eigenes Etikett „Mit Code {code} versandkostenfrei“ (einstellbar), statt „… sparen“

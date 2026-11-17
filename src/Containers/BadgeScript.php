@@ -31,7 +31,7 @@ class BadgeScript
         foreach ($zahlen as $id) {
             /** @var CachingRepository $cache */
             $cache = pluginApp(CachingRepository::class);
-            $schluessel = 'OSVBadges_gutschein_' . $id;
+            $schluessel = 'OSVBadges_gutschein2_' . $id;
             $eintrag = $cache->get($schluessel);
             if (!is_array($eintrag)) {
                 $eintrag = ['leer' => true];
@@ -42,7 +42,20 @@ class BadgeScript
                         /** @var CouponCampaignRepositoryContract $repo */
                         $repo = pluginApp(CouponCampaignRepositoryContract::class);
                         $kampagne = $repo->findById($id);
-                        return $kampagne ? $kampagne->toArray() : null;
+                        if (!$kampagne) {
+                            return null;
+                        }
+                        // Codes und Bezüge sind Beziehungen, toArray() liefert sie nur, wenn sie geladen sind: einzeln abrufen
+                        $daten = $kampagne->toArray();
+                        foreach (['codes', 'references'] as $feld) {
+                            try {
+                                $wert = $kampagne->$feld;
+                                $daten[$feld] = is_object($wert) ? $wert->toArray() : (is_array($wert) ? $wert : []);
+                            } catch (\Throwable $fehler) {
+                                $daten[$feld . 'Fehler'] = substr($fehler->getMessage(), 0, 120);
+                            }
+                        }
+                        return $daten;
                     });
                     if (is_array($k)) {
                         $eintrag = $this->kampagne($k);
@@ -84,7 +97,7 @@ class BadgeScript
         }
         $grund = ($k['concept'] ?? 'single_code') !== 'single_code' ? 'ein Code je Kunde' : (count($codes) !== 1 ? count($codes) . ' Codes' : (!count($artikel) ? 'keine Artikel' : (!$ende ? 'kein Ende' : '')));
         if ($grund !== '') {
-            return ['leer' => true, 'grund' => $grund, 'felder' => implode(',', array_keys($k))];
+            return ['leer' => true, 'grund' => $grund . ' (Codes ' . count($k['codes'] ?? []) . ', Bezüge ' . count($k['references'] ?? []) . ($k['codesFehler'] ?? '') . ($k['referencesFehler'] ?? '') . ', von ' . ($k['startsAt'] ?? '') . ', bis ' . ($k['endsAt'] ?? '') . ')', 'felder' => implode(',', array_keys($k))];
         }
         $wert = (float)($k['value'] ?? 0);
         $rabatt = '';
