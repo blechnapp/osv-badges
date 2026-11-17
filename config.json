@@ -7,25 +7,9 @@
         "gutscheinIds": {
           "type": "text",
           "required": false,
-          "label": "ID der Gutscheinkampagne (mehrere mit Komma). Laufzeit, Rabatt und Artikel kommen aus der Kampagne. Leer = aus",
+          "label": "ID der Gutscheinkampagne (mehrere mit Komma). Code, Laufzeit, Artikel und Etikett-Text (Feld „Beschreibung“ der Kampagne) kommen aus der Kampagne. Leer = aus",
           "options": {
             "defaultValue": ""
-          }
-        },
-        "gutscheinText": {
-          "type": "text",
-          "required": false,
-          "label": "Etikett auf Kachel und Artikelbild, {code} und {rabatt} werden ersetzt",
-          "options": {
-            "defaultValue": "Mit Code {code} {rabatt} sparen"
-          }
-        },
-        "gutscheinTextVersand": {
-          "type": "text",
-          "required": false,
-          "label": "Etikett bei Gutschein „Versand“ (versandkostenfrei), {code} wird ersetzt",
-          "options": {
-            "defaultValue": "Mit Code {code} versandkostenfrei"
           }
         },
         "gutscheinZeile": {
@@ -33,7 +17,7 @@
           "required": false,
           "label": "Zeile unter dem Artikelbild, {code}, {rabatt} und {ende} werden ersetzt",
           "options": {
-            "defaultValue": "Gutschein {code} gilt bis {ende}. Nicht mit anderen Gutscheinen kombinierbar."
+            "defaultValue": "Gilt bis {ende}, nicht mit anderen Gutscheinen kombinierbar."
           }
         }
       }

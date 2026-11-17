@@ -109,8 +109,33 @@ class BadgeScript
             $rabatt = str_replace('.', ',', rtrim(rtrim(number_format($wert, 2, '.', ''), '0'), '.')) . ' %';
         } elseif (($k['discountType'] ?? '') === 'fixed' && $wert > 0) {
             $rabatt = number_format($wert, 2, ',', '.') . ' €';
+        } elseif (($k['discountType'] ?? '') === 'item') {
+            // „Kaufe 4, zahle 3“: größere Zahl = Stück, kleinere = bezahlte Stück
+            $a = (int)($k['itemDiscountToBuy'] ?? 0);
+            $b = (int)($k['itemDiscountToPay'] ?? 0);
+            if ($a > 0 && $b > 0 && $a !== $b) {
+                $rabatt = max($a, $b) . ' für ' . min($a, $b);
+            }
+        }
+        // Etikett-Text: aus der Beschreibung der Kampagne (je Gutschein eigener Text), sonst passend zur Rabattart
+        $text = trim(strip_tags((string)($k['description'] ?? '')));
+        if ($text !== '' && strpos($text, '{code}') === false) {
+            $text .= ' mit Gutschein {code}';
+        }
+        if ($text === '') {
+            $art = (string)($k['discountType'] ?? '');
+            if ($art === 'shipping') {
+                $text = 'Versandkostenfrei mit Gutschein {code}';
+            } elseif ($rabatt !== '' && $art === 'item') {
+                $text = '{rabatt} mit Gutschein {code}';
+            } elseif ($rabatt !== '') {
+                $text = '{rabatt} Rabatt mit Gutschein {code}';
+            } else {
+                $text = 'Mit Gutschein {code}';
+            }
         }
         return [
+            't' => substr($text, 0, 120),
             'c' => $codes[0],
             'r' => $rabatt,
             'art' => (string)($k['discountType'] ?? ''),
@@ -147,8 +172,6 @@ class BadgeScript
         $textProzent = trim((string)$config->get('OSVBadges.sparenTextProzent', ''));
         $textEuro = trim((string)$config->get('OSVBadges.sparenTextEuro', ''));
         $textVor = trim((string)$config->get('OSVBadges.lieferTextVor', ''));
-        $textGutschein = trim((string)$config->get('OSVBadges.gutscheinText', ''));
-        $textVersand = trim((string)$config->get('OSVBadges.gutscheinTextVersand', ''));
         $zeileGutschein = trim((string)$config->get('OSVBadges.gutscheinZeile', ''));
         return $twig->render('OSVBadges::Containers.BadgeScript', [
             'kachel' => $kachel,
@@ -167,9 +190,7 @@ class BadgeScript
                 'textVor' => $textVor !== '' ? $textVor : 'Lieferbar ab {datum}',
                 'gutscheine' => $gutscheine,
                 'gutscheinDiagnose' => $diagnose,
-                'textGutschein' => $textGutschein !== '' ? $textGutschein : 'Mit Code {code} {rabatt} sparen',
-                'textVersand' => $textVersand !== '' ? $textVersand : 'Mit Code {code} versandkostenfrei',
-                'zeileGutschein' => $zeileGutschein !== '' ? $zeileGutschein : 'Gutschein {code} gilt bis {ende}. Nicht mit anderen Gutscheinen kombinierbar.',
+                'zeileGutschein' => $zeileGutschein !== '' ? $zeileGutschein : 'Gilt bis {ende}, nicht mit anderen Gutscheinen kombinierbar.',
             ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT),
         ]);
     }

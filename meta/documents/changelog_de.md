@@ -2,6 +2,12 @@
 
 Neueste Version oben. Jede Version ist ein Git-Tag; im Plugin-Set wird der Tag gewählt.
 
+## 0.8.5 (17.11.2026)
+
+- Etikett-Text je Gutschein aus dem Feld „Beschreibung“ der Kampagne, {code} und {rabatt} werden ersetzt; fehlt {code}, wird „mit Gutschein {code}“ angehängt (Kay: Text gehört an den Gutschein, nicht ins Plugin)
+- Ohne Beschreibung passender Text nach Rabattart: Versand „Versandkostenfrei mit Gutschein …“, Prozent/Betrag „15 % Rabatt mit Gutschein …“, Artikel „4 für 3 mit Gutschein …“
+- Die beiden Etikett-Texte in der Plugin-Konfiguration entfallen; Zeile unter dem Artikelbild bleibt einstellbar (Standard „Gilt bis {ende}, nicht mit anderen Gutscheinen kombinierbar.“)
+
 ## 0.8.4 (17.11.2026)
 
 - Gutschein-Code im Etikett als dunkelblaues Kästchen mit weißer Schrift hervorgehoben (Variante B, Kay 17.11.), Etikett bleibt gold

@@ -124,7 +124,7 @@
     var g = aktion(artikelId(location.pathname));
     var band = gross.querySelector(":scope > .osvg-bild"), zeile = bild.nextElementSibling && bild.nextElementSibling.classList.contains("osvg-zeile") ? bild.nextElementSibling : null;
     if (!g) { if (band) band.parentNode.removeChild(band); if (zeile) zeile.parentNode.removeChild(zeile); return; }
-    var text = fuellen(g.art === "shipping" ? EIN.textVersand : EIN.textGutschein, g), satz = fuellen(EIN.zeileGutschein, g);
+    var text = fuellen(g.t, g), satz = fuellen(EIN.zeileGutschein, g);
     if (!band) { band = document.createElement("div"); band.className = "osvb-band osvg-bild"; band.appendChild(document.createElement("span")).className = "osvb"; gross.appendChild(band); }
     if (band.firstChild.textContent !== text) band.firstChild.textContent = text;
     codeHervorheben(band.firstChild);
@@ -138,7 +138,7 @@
       if (!GUT.length) return "";
       var link = k.querySelector("a.thumb-title") || k.querySelector(".thumb-image a[href]");
       var g = link ? aktion(artikelId(link.getAttribute("href"))) : null;
-      return g ? fuellen(g.art === "shipping" ? EIN.textVersand : EIN.textGutschein, g) : "";
+      return g ? fuellen(g.t, g) : "";
     },
     function sparen(k) {
       if (!EIN.sparen) return "";
