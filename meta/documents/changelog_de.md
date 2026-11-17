@@ -2,6 +2,10 @@
 
 Neueste Version oben. Jede Version ist ein Git-Tag; im Plugin-Set wird der Tag gewählt.
 
+## 0.8.4 (17.11.2026)
+
+- Gutschein-Code im Etikett als dunkelblaues Kästchen mit weißer Schrift hervorgehoben (Variante B, Kay 17.11.), Etikett bleibt gold
+
 ## 0.8.3 (17.11.2026)
 
 - Codes und Bezüge direkt abrufen statt über einen Variablennamen (0.8.2 kam in Set 78 nicht an, vermutlich vom Plenty-Build abgelehnt)

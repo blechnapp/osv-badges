@@ -5,6 +5,7 @@
 @media (max-width: 575.98px) { .osvb-band .osvb { font-size: 13px; padding: 5px 12px 5px 9px; } }
 /* Gutschein-Aktion auf der Artikelseite: dasselbe Etikett unten links aufs Bild, darunter eine Zeile mit Laufzeit */
 .single .single-carousel > .osvg-bild { position: absolute; left: 0; bottom: 12px; max-width: 90%; z-index: 3; pointer-events: none; }
+.osvb .osvg-code { display: inline-block; margin: 0 2px; padding: 1px 6px; border-radius: 3px; background: #0c2a5e; color: #fff; letter-spacing: .5px; }
 .osvg-zeile { margin: 10px 0 0 0; padding: 7px 12px; border-left: 3px solid #d4b062; border-radius: 4px; background: #faf5ea; color: #0c2a5e; font-size: 14px; line-height: 1.4; }
 {% if kachel %}
 /* Kachel als Karte: Preis vorn und groß, UVP klein dahinter, alles linksbündig; Name immer drei Zeilen hoch, damit Preise je Reihe auf einer Höhe stehen */
@@ -103,6 +104,19 @@
   function fuellen(vorlage, g) {
     return vorlage.split("{code}").join(g.c).split("{rabatt}").join(g.r).split("{ende}").join(g.ende).replace(/\s{2,}/g, " ").trim();
   }
+  // Code im Etikett als dunkelblaues Kästchen hervorheben (Text bleibt Text, nur der Code wird eingerahmt)
+  function codeHervorheben(el) {
+    if (!el || el.querySelector(".osvg-code")) return;
+    for (var i = 0; i < GUT.length; i++) {
+      var c = GUT[i].c, t = el.textContent, p = t.indexOf(c);
+      if (p < 0) continue;
+      el.textContent = "";
+      el.appendChild(document.createTextNode(t.slice(0, p)));
+      var s = document.createElement("span"); s.className = "osvg-code"; s.textContent = c; el.appendChild(s);
+      el.appendChild(document.createTextNode(t.slice(p + c.length)));
+      return;
+    }
+  }
   function artikelseite() {
     // Etikett aufs große Bild (nicht auf die Vorschaubilder), Zeile unter den ganzen Bildbereich
     var bild = document.querySelector(".single .widget-item-image"), gross = bild && bild.querySelector(".single-carousel");
@@ -113,6 +127,7 @@
     var text = fuellen(g.art === "shipping" ? EIN.textVersand : EIN.textGutschein, g), satz = fuellen(EIN.zeileGutschein, g);
     if (!band) { band = document.createElement("div"); band.className = "osvb-band osvg-bild"; band.appendChild(document.createElement("span")).className = "osvb"; gross.appendChild(band); }
     if (band.firstChild.textContent !== text) band.firstChild.textContent = text;
+    codeHervorheben(band.firstChild);
     if (!zeile) { zeile = document.createElement("p"); zeile.className = "osvg-zeile"; bild.parentNode.insertBefore(zeile, bild.nextSibling); }
     if (zeile.textContent !== satz) zeile.textContent = satz;
   }
@@ -210,6 +225,7 @@
     band.className = "osvb-band";
     var b = document.createElement("span");
     b.className = "osvb"; b.textContent = text;
+    if (GUT.length) codeHervorheben(b);
     band.appendChild(b);
     platz.appendChild(band);
   }
