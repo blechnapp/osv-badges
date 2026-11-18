@@ -102,7 +102,7 @@
     return null;
   }
   function fuellen(vorlage, g) {
-    return vorlage.split("{code}").join(g.c).split("{rabatt}").join(g.r).split("{ende}").join(g.ende).replace(/\s{2,}/g, " ").trim();
+    return String(vorlage || "").split("{code}").join(g.c).split("{rabatt}").join(g.r).split("{ende}").join(g.ende).replace(/\s{2,}/g, " ").trim();
   }
   // Code im Etikett als dunkelblaues Kästchen hervorheben (Text bleibt Text, nur der Code wird eingerahmt)
   function codeHervorheben(el) {

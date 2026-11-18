@@ -2,6 +2,11 @@
 
 Neueste Version oben. Jede Version ist ein Git-Tag; im Plugin-Set wird der Tag gewählt.
 
+## 0.8.6 (18.11.2026)
+
+- Vorlage heißt jetzt BadgeAnzeige.twig: Set 78 lieferte nach dem Bereitstellen von 0.8.5 noch die zwischengespeicherte Vorlage von 0.8.3 aus, die alten Etikett-Texte fehlten, es erschien kein Etikett. Der neue Name erzwingt das Neuladen
+- Etikett-Text abgesichert: fehlt ein Text, bricht die Anzeige nicht mehr ab
+
 ## 0.8.5 (17.11.2026)
 
 - Etikett-Text je Gutschein aus dem Feld „Beschreibung“ der Kampagne, {code} und {rabatt} werden ersetzt; fehlt {code}, wird „mit Gutschein {code}“ angehängt (Kay: Text gehört an den Gutschein, nicht ins Plugin)
