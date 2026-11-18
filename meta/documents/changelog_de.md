@@ -2,6 +2,10 @@
 
 Neueste Version oben. Jede Version ist ein Git-Tag; im Plugin-Set wird der Tag gewählt.
 
+## 0.8.8 (18.11.2026)
+
+- Gutschein-Code im Etikett der Artikelseite antippen bzw. anklicken kopiert ihn, kurz erscheint „✓ kopiert“; das Bild-Karussell reagiert auf diesen Klick nicht (Kay, 18.11.: Code war nicht kopierbar). Auf der Kachel bleibt ein Klick der Weg zum Artikel
+
 ## 0.8.7 (18.11.2026)
 
 - Zeile „Gilt bis …“ sitzt jetzt im Bildbereich der Artikelseite. Der Bildbereich ist sticky, vorher scrollte die Zeile darunter weg (Kay, 18.11.)

@@ -6,6 +6,9 @@
 /* Gutschein-Aktion auf der Artikelseite: dasselbe Etikett unten links aufs Bild, darunter eine Zeile mit Laufzeit */
 .single .single-carousel > .osvg-bild { position: absolute; left: 0; bottom: 12px; max-width: 90%; z-index: 3; pointer-events: none; }
 .osvb .osvg-code { display: inline-block; margin: 0 2px; padding: 1px 6px; border-radius: 3px; background: #0c2a5e; color: #fff; letter-spacing: .5px; }
+/* Artikelseite: Code antippen = kopieren (das Etikett selbst lässt Klicks und Wischen zum Bild durch) */
+.single .osvg-bild .osvg-code { pointer-events: auto; cursor: pointer; -webkit-user-select: all; user-select: all; }
+.osvg-code.kopiert::after { content: " \2713 kopiert"; font-weight: normal; }
 .osvg-zeile { margin: 10px 0 0 0; padding: 7px 12px; border-left: 3px solid #d4b062; border-radius: 4px; background: #faf5ea; color: #0c2a5e; font-size: 14px; line-height: 1.4; }
 {% if kachel %}
 /* Kachel als Karte: Preis vorn und groß, UVP klein dahinter, alles linksbündig; Name immer drei Zeilen hoch, damit Preise je Reihe auf einer Höhe stehen */
@@ -112,11 +115,29 @@
       if (p < 0) continue;
       el.textContent = "";
       el.appendChild(document.createTextNode(t.slice(0, p)));
-      var s = document.createElement("span"); s.className = "osvg-code"; s.textContent = c; el.appendChild(s);
+      var s = document.createElement("span"); s.className = "osvg-code"; s.textContent = c; s.title = "Code kopieren"; el.appendChild(s);
       el.appendChild(document.createTextNode(t.slice(p + c.length)));
       return;
     }
   }
+  // Klick auf den Code im Etikett der Artikelseite kopiert ihn; Erfassen vor dem Bild-Karussell, damit es nicht wischt oder vergrößert
+  function codeKopieren(c) {
+    var text = c.textContent, fertig = function () { c.classList.add("kopiert"); setTimeout(function () { c.classList.remove("kopiert"); }, 2000); };
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(fertig, function () { altKopieren(text); fertig(); }); }
+    else { altKopieren(text); fertig(); }
+  }
+  function altKopieren(text) {
+    var f = document.createElement("textarea"); f.value = text; f.setAttribute("readonly", ""); f.style.position = "fixed"; f.style.opacity = "0";
+    document.body.appendChild(f); f.select(); try { document.execCommand("copy"); } catch (e) {} document.body.removeChild(f);
+  }
+  ["mousedown", "touchstart", "pointerdown"].forEach(function (art) {
+    document.addEventListener(art, function (e) { if (e.target.closest && e.target.closest(".osvg-bild .osvg-code")) e.stopPropagation(); }, true);
+  });
+  document.addEventListener("click", function (e) {
+    var c = e.target.closest && e.target.closest(".osvg-bild .osvg-code");
+    if (!c) return;
+    e.preventDefault(); e.stopPropagation(); codeKopieren(c);
+  }, true);
   function artikelseite() {
     // Etikett aufs große Bild (nicht auf die Vorschaubilder), Zeile unten in den Bildbereich (der ist sticky, sonst scrollt die Zeile unters Bild)
     var bild = document.querySelector(".single .widget-item-image"), gross = bild && bild.querySelector(".single-carousel");
