@@ -118,17 +118,17 @@
     }
   }
   function artikelseite() {
-    // Etikett aufs große Bild (nicht auf die Vorschaubilder), Zeile unter den ganzen Bildbereich
+    // Etikett aufs große Bild (nicht auf die Vorschaubilder), Zeile unten in den Bildbereich (der ist sticky, sonst scrollt die Zeile unters Bild)
     var bild = document.querySelector(".single .widget-item-image"), gross = bild && bild.querySelector(".single-carousel");
     if (!bild || !gross) return;
     var g = aktion(artikelId(location.pathname));
-    var band = gross.querySelector(":scope > .osvg-bild"), zeile = bild.nextElementSibling && bild.nextElementSibling.classList.contains("osvg-zeile") ? bild.nextElementSibling : null;
+    var band = gross.querySelector(":scope > .osvg-bild"), zeile = bild.querySelector(":scope > .osvg-zeile");
     if (!g) { if (band) band.parentNode.removeChild(band); if (zeile) zeile.parentNode.removeChild(zeile); return; }
     var text = fuellen(g.t, g), satz = fuellen(EIN.zeileGutschein, g);
     if (!band) { band = document.createElement("div"); band.className = "osvb-band osvg-bild"; band.appendChild(document.createElement("span")).className = "osvb"; gross.appendChild(band); }
     if (band.firstChild.textContent !== text) band.firstChild.textContent = text;
     codeHervorheben(band.firstChild);
-    if (!zeile) { zeile = document.createElement("p"); zeile.className = "osvg-zeile"; bild.parentNode.insertBefore(zeile, bild.nextSibling); }
+    if (!zeile) { zeile = document.createElement("p"); zeile.className = "osvg-zeile"; bild.appendChild(zeile); }
     if (zeile.textContent !== satz) zeile.textContent = satz;
   }
 

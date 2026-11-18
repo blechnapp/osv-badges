@@ -2,6 +2,10 @@
 
 Neueste Version oben. Jede Version ist ein Git-Tag; im Plugin-Set wird der Tag gewählt.
 
+## 0.8.7 (18.11.2026)
+
+- Zeile „Gilt bis …“ sitzt jetzt im Bildbereich der Artikelseite. Der Bildbereich ist sticky, vorher scrollte die Zeile darunter weg (Kay, 18.11.)
+
 ## 0.8.6 (18.11.2026)
 
 - Vorlage heißt jetzt BadgeAnzeige.twig: Set 78 lieferte nach dem Bereitstellen von 0.8.5 noch die zwischengespeicherte Vorlage von 0.8.3 aus, die alten Etikett-Texte fehlten, es erschien kein Etikett. Der neue Name erzwingt das Neuladen
