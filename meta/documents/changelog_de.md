@@ -2,6 +2,10 @@
 
 Neueste Version oben. Jede Version ist ein Git-Tag; im Plugin-Set wird der Tag gewählt.
 
+## 0.9.1 (26.11.2026)
+
+- Plenty-Build lehnte 0.9.0 ab („clone or new are not allowed“, Hilfsfunktion über Variable aufgerufen): Datum jetzt über strtotime, Textfelder über eine eigene Methode
+
 ## 0.9.0 (26.11.2026)
 
 - Neues Menü „Aktionen“ mit drei Plätzen: Aktionskachel im Artikelraster (Rechner und Tablet, zwei Kacheln breit, Nachtblau mit Gold) und schmales Band über den Artikeln (Handy) für eine Variante, in gewählten Kategorien, nur zwischen „Sichtbar ab“ und „Sichtbar bis“ (Kay, 26.11.: Vorbestellung Jahresengel 2027)

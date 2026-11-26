@@ -163,13 +163,9 @@ class BadgeScript
         if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $wert)) {
             return $wert;
         }
-        try {
-            $d = new \DateTime($wert);
-            $d->setTimezone(new \DateTimeZone('Europe/Berlin'));
-            return $d->format('Y-m-d');
-        } catch (\Throwable $fehler) {
-            return '';
-        }
+        // Kein new erlaubt (Plenty-Build): Zeitstempel über strtotime, Kalendertag in der Zeitzone des Systems
+        $zeit = strtotime($wert);
+        return $zeit ? date('Y-m-d', $zeit) : '';
     }
 
     /** Artikelnummer (oder Varianten-ID) in die Varianten-ID übersetzen, 10 Minuten zwischengespeichert */
@@ -277,28 +273,30 @@ class BadgeScript
                 $diagnose[] = $diag;
                 continue;
             }
-            $text = function (string $feld) use ($config, $p) {
-                return trim((string)$config->get($p . $feld, ''));
-            };
             $liste[] = $a + [
                 'k' => $kategorien,
                 's' => $this->tag((string)$config->get($p . 'von', '')),
                 'e' => $this->tag((string)$config->get($p . 'bis', '')),
                 'pos' => max(1, (int)$config->get($p . 'stelle', '1')),
-                'ecke' => $text('ecke'),
-                'marke' => $text('kennzeile'),
-                'titel' => $text('titel'),
-                'unter' => $text('unterzeile'),
-                'satz' => $text('satz'),
-                'liefer' => $text('lieferzeile'),
-                'knopf' => $text('knopf') !== '' ? $text('knopf') : 'Zum Artikel',
-                'bt' => $text('bandTitel'),
-                'bz' => $text('bandZeile'),
+                'ecke' => $this->feld($config, $p, 'ecke'),
+                'marke' => $this->feld($config, $p, 'kennzeile'),
+                'titel' => $this->feld($config, $p, 'titel'),
+                'unter' => $this->feld($config, $p, 'unterzeile'),
+                'satz' => $this->feld($config, $p, 'satz'),
+                'liefer' => $this->feld($config, $p, 'lieferzeile'),
+                'knopf' => $this->feld($config, $p, 'knopf') !== '' ? $this->feld($config, $p, 'knopf') : 'Zum Artikel',
+                'bt' => $this->feld($config, $p, 'bandTitel'),
+                'bz' => $this->feld($config, $p, 'bandZeile'),
             ];
             $diag['ok'] = true;
             $diagnose[] = $diag;
         }
         return $liste;
+    }
+
+    private function feld(ConfigRepository $config, string $p, string $feld): string
+    {
+        return trim((string)$config->get($p . $feld, ''));
     }
 
     private function an(ConfigRepository $config, string $schluessel, string $standard = 'true'): bool
