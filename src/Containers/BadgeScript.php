@@ -326,7 +326,7 @@ class BadgeScript
         $textEuro = trim((string)$config->get('OSVBadges.sparenTextEuro', ''));
         $textVor = trim((string)$config->get('OSVBadges.lieferTextVor', ''));
         $zeileGutschein = trim((string)$config->get('OSVBadges.gutscheinZeile', ''));
-        return $twig->render('OSVBadges::Containers.KachelAnzeige', [
+        return $twig->render('OSVBadges::Containers.AktionsAnzeige', [
             'kachel' => $kachel,
             'aktionen' => count($aktionen) > 0,
             'filter' => $filter,

@@ -2,6 +2,11 @@
 
 Neueste Version oben. Jede Version ist ein Git-Tag; im Plugin-Set wird der Tag gewählt.
 
+## 0.9.4 (26.11.2026)
+
+- Vorlage heißt jetzt AktionsAnzeige.twig: Set 78 lieferte nach dem Bereitstellen von 0.9.2 noch die zwischengespeicherte Vorlage aus, die Farbkorrektur fehlte im Seitencode
+- Aktionskachel: Bild an die Höhe der Kachel angepasst, ganze Figur so groß wie möglich (0.9.3 „eingepasst“ machte den Engel wegen des weißen Bildrands zu klein)
+
 ## 0.9.3 (26.11.2026)
 
 - Aktionskachel: Artikelbild zeigt die ganze Figur (eingepasst statt auf 150 % vergrößert); auf breiten Bildschirmen waren Kopf und Fuß abgeschnitten (Kay, 26.11.)
