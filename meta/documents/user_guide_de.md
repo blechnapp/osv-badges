@@ -2,6 +2,16 @@
 
 Badges auf den Artikelkacheln, auf Kategorieseiten und in den Ergebnissen der OSV-Suche.
 
+## Aktionen (ab 0.9.0)
+
+Konfiguration, Menü „Aktionen“ mit drei Plätzen „Aktion 1“ bis „Aktion 3“. Je Aktion:
+
+- **Aktion anzeigen** an/aus, **Kategorie-IDs** (mehrere mit Komma), **Artikelnummer** der Variante (oder Varianten-ID), **Sichtbar ab / bis** (jeweils einschließlich, Kalendertag), **Stelle im Artikelraster**.
+- Texte: Eckband, Kennzeile, Titel, Zeile darunter, Text, Lieferzeile, Button, dazu Titel und Zeile für das Band am Handy. Platzhalter: `{name}` (Artikelname), `{preis}` (aktueller Shoppreis), `{datum}` (Erscheinungsdatum der Variante).
+- Bild, Name, Preis, Link und Erscheinungsdatum holt das Plugin aus dem Artikel (Änderungen nach höchstens 10 Minuten).
+
+Am Rechner und Tablet erscheint eine nachtblaue Aktionskachel mit Gold, zwei Kacheln breit, an der eingestellten Stelle im Raster. Am Handy steht stattdessen ein schmales Band über den Artikeln. Nur auf Seite 1 der Kategorie; vor „Sichtbar ab“ und nach „Sichtbar bis“ verschwindet die Aktion von selbst. Prüfen im Browser: `OSVBadgesAktionen` in der Konsole zeigt die geladenen Aktionen und den Grund, falls eine fehlt.
+
 ## Gutschein-Aktion (ab 0.8.0)
 
 Konfiguration, Reiter „Gutschein-Aktion“: ID der Gutscheinkampagne eintragen (mehrere mit Komma). Code, Rabatt, Start, Ende und die Artikel liest das Plugin aus der Kampagne. Der Text des Etiketts kommt aus dem Feld „Beschreibung“ der Kampagne ({code} und {rabatt} werden ersetzt), ohne Beschreibung passend zur Rabattart. Auf der Artikelseite steht darunter eine Zeile mit Enddatum. Vor dem Start und nach dem Ende verschwindet alles von selbst. Texte sind einstellbar. Voraussetzung: Kampagne mit einem gemeinsamen Code, Artikel als Bezug (Kategorien werden noch nicht ausgewertet). Änderungen an der Kampagne erscheinen nach höchstens 10 Minuten.

@@ -1,6 +1,386 @@
 {
   "formatVersion": 1,
   "menu": {
+    "Aktionen": {
+      "label": "Aktionen (Kachel in Kategorien)",
+      "menu": {
+        "Aktion1": {
+          "label": "Aktion 1",
+          "formFields": {
+            "aktion1.aktiv": {
+              "type": "checkBox",
+              "required": false,
+              "label": "Aktion anzeigen",
+              "options": {
+                "defaultValue": "false"
+              }
+            },
+            "aktion1.kategorien": {
+              "type": "text",
+              "required": false,
+              "label": "Kategorie-IDs, mehrere mit Komma (z. B. 224, 280). Nur Seite 1 der Kategorie",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion1.artikel": {
+              "type": "text",
+              "required": false,
+              "label": "Artikelnummer der Variante (z. B. 1S504F27) oder Varianten-ID. Bild, Name, Preis, Link und Liefertermin kommen aus dem Artikel",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion1.von": {
+              "type": "datePicker",
+              "required": false,
+              "label": "Sichtbar ab (einschließlich)",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion1.bis": {
+              "type": "datePicker",
+              "required": false,
+              "label": "Sichtbar bis (einschließlich), danach verschwindet die Aktion von selbst",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion1.stelle": {
+              "type": "text",
+              "required": false,
+              "label": "Stelle im Artikelraster (1 = ganz vorn)",
+              "options": {
+                "defaultValue": "1"
+              }
+            },
+            "aktion1.ecke": {
+              "type": "text",
+              "required": false,
+              "label": "Eckband oben links auf dem Bild, leer = keins",
+              "options": {
+                "defaultValue": "Neu"
+              }
+            },
+            "aktion1.kennzeile": {
+              "type": "text",
+              "required": false,
+              "label": "Kachel: kleine Zeile über dem Titel",
+              "options": {
+                "defaultValue": "Vorbestellung"
+              }
+            },
+            "aktion1.titel": {
+              "type": "text",
+              "required": false,
+              "label": "Kachel: Titel, leer = Artikelname. Platzhalter überall: {name} {preis} {datum}",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion1.unterzeile": {
+              "type": "text",
+              "required": false,
+              "label": "Kachel: Zeile unter dem Titel (kursiv, gold)",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion1.satz": {
+              "type": "text",
+              "required": false,
+              "label": "Kachel: Text",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion1.lieferzeile": {
+              "type": "text",
+              "required": false,
+              "label": "Kachel: Lieferzeile mit Kalender-Symbol, leer = keine",
+              "options": {
+                "defaultValue": "Lieferung ab {datum}"
+              }
+            },
+            "aktion1.knopf": {
+              "type": "text",
+              "required": false,
+              "label": "Text des Buttons (Kachel und Band)",
+              "options": {
+                "defaultValue": "Jetzt vorbestellen"
+              }
+            },
+            "aktion1.bandTitel": {
+              "type": "text",
+              "required": false,
+              "label": "Handy-Band: Titel, leer = Artikelname",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion1.bandZeile": {
+              "type": "text",
+              "required": false,
+              "label": "Handy-Band: Zeile darunter",
+              "options": {
+                "defaultValue": "Lieferung ab {datum} · {preis}"
+              }
+            }
+          }
+        },
+        "Aktion2": {
+          "label": "Aktion 2",
+          "formFields": {
+            "aktion2.aktiv": {
+              "type": "checkBox",
+              "required": false,
+              "label": "Aktion anzeigen",
+              "options": {
+                "defaultValue": "false"
+              }
+            },
+            "aktion2.kategorien": {
+              "type": "text",
+              "required": false,
+              "label": "Kategorie-IDs, mehrere mit Komma (z. B. 224, 280). Nur Seite 1 der Kategorie",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion2.artikel": {
+              "type": "text",
+              "required": false,
+              "label": "Artikelnummer der Variante (z. B. 1S504F27) oder Varianten-ID. Bild, Name, Preis, Link und Liefertermin kommen aus dem Artikel",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion2.von": {
+              "type": "datePicker",
+              "required": false,
+              "label": "Sichtbar ab (einschließlich)",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion2.bis": {
+              "type": "datePicker",
+              "required": false,
+              "label": "Sichtbar bis (einschließlich), danach verschwindet die Aktion von selbst",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion2.stelle": {
+              "type": "text",
+              "required": false,
+              "label": "Stelle im Artikelraster (1 = ganz vorn)",
+              "options": {
+                "defaultValue": "1"
+              }
+            },
+            "aktion2.ecke": {
+              "type": "text",
+              "required": false,
+              "label": "Eckband oben links auf dem Bild, leer = keins",
+              "options": {
+                "defaultValue": "Neu"
+              }
+            },
+            "aktion2.kennzeile": {
+              "type": "text",
+              "required": false,
+              "label": "Kachel: kleine Zeile über dem Titel",
+              "options": {
+                "defaultValue": "Vorbestellung"
+              }
+            },
+            "aktion2.titel": {
+              "type": "text",
+              "required": false,
+              "label": "Kachel: Titel, leer = Artikelname. Platzhalter überall: {name} {preis} {datum}",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion2.unterzeile": {
+              "type": "text",
+              "required": false,
+              "label": "Kachel: Zeile unter dem Titel (kursiv, gold)",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion2.satz": {
+              "type": "text",
+              "required": false,
+              "label": "Kachel: Text",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion2.lieferzeile": {
+              "type": "text",
+              "required": false,
+              "label": "Kachel: Lieferzeile mit Kalender-Symbol, leer = keine",
+              "options": {
+                "defaultValue": "Lieferung ab {datum}"
+              }
+            },
+            "aktion2.knopf": {
+              "type": "text",
+              "required": false,
+              "label": "Text des Buttons (Kachel und Band)",
+              "options": {
+                "defaultValue": "Jetzt vorbestellen"
+              }
+            },
+            "aktion2.bandTitel": {
+              "type": "text",
+              "required": false,
+              "label": "Handy-Band: Titel, leer = Artikelname",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion2.bandZeile": {
+              "type": "text",
+              "required": false,
+              "label": "Handy-Band: Zeile darunter",
+              "options": {
+                "defaultValue": "Lieferung ab {datum} · {preis}"
+              }
+            }
+          }
+        },
+        "Aktion3": {
+          "label": "Aktion 3",
+          "formFields": {
+            "aktion3.aktiv": {
+              "type": "checkBox",
+              "required": false,
+              "label": "Aktion anzeigen",
+              "options": {
+                "defaultValue": "false"
+              }
+            },
+            "aktion3.kategorien": {
+              "type": "text",
+              "required": false,
+              "label": "Kategorie-IDs, mehrere mit Komma (z. B. 224, 280). Nur Seite 1 der Kategorie",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion3.artikel": {
+              "type": "text",
+              "required": false,
+              "label": "Artikelnummer der Variante (z. B. 1S504F27) oder Varianten-ID. Bild, Name, Preis, Link und Liefertermin kommen aus dem Artikel",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion3.von": {
+              "type": "datePicker",
+              "required": false,
+              "label": "Sichtbar ab (einschließlich)",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion3.bis": {
+              "type": "datePicker",
+              "required": false,
+              "label": "Sichtbar bis (einschließlich), danach verschwindet die Aktion von selbst",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion3.stelle": {
+              "type": "text",
+              "required": false,
+              "label": "Stelle im Artikelraster (1 = ganz vorn)",
+              "options": {
+                "defaultValue": "1"
+              }
+            },
+            "aktion3.ecke": {
+              "type": "text",
+              "required": false,
+              "label": "Eckband oben links auf dem Bild, leer = keins",
+              "options": {
+                "defaultValue": "Neu"
+              }
+            },
+            "aktion3.kennzeile": {
+              "type": "text",
+              "required": false,
+              "label": "Kachel: kleine Zeile über dem Titel",
+              "options": {
+                "defaultValue": "Vorbestellung"
+              }
+            },
+            "aktion3.titel": {
+              "type": "text",
+              "required": false,
+              "label": "Kachel: Titel, leer = Artikelname. Platzhalter überall: {name} {preis} {datum}",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion3.unterzeile": {
+              "type": "text",
+              "required": false,
+              "label": "Kachel: Zeile unter dem Titel (kursiv, gold)",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion3.satz": {
+              "type": "text",
+              "required": false,
+              "label": "Kachel: Text",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion3.lieferzeile": {
+              "type": "text",
+              "required": false,
+              "label": "Kachel: Lieferzeile mit Kalender-Symbol, leer = keine",
+              "options": {
+                "defaultValue": "Lieferung ab {datum}"
+              }
+            },
+            "aktion3.knopf": {
+              "type": "text",
+              "required": false,
+              "label": "Text des Buttons (Kachel und Band)",
+              "options": {
+                "defaultValue": "Jetzt vorbestellen"
+              }
+            },
+            "aktion3.bandTitel": {
+              "type": "text",
+              "required": false,
+              "label": "Handy-Band: Titel, leer = Artikelname",
+              "options": {
+                "defaultValue": ""
+              }
+            },
+            "aktion3.bandZeile": {
+              "type": "text",
+              "required": false,
+              "label": "Handy-Band: Zeile darunter",
+              "options": {
+                "defaultValue": "Lieferung ab {datum} · {preis}"
+              }
+            }
+          }
+        }
+      }
+    },
     "Gutschein": {
       "label": "Gutschein-Aktion",
       "formFields": {

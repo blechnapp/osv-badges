@@ -3,6 +3,9 @@
 namespace OSVBadges\Containers;
 
 use Plenty\Modules\Authorization\Services\AuthHelper;
+use Plenty\Modules\Item\Variation\Contracts\VariationSearchRepositoryContract;
+use Plenty\Modules\Webshop\ItemSearch\SearchPresets\VariationList;
+use Plenty\Modules\Webshop\ItemSearch\Services\ItemSearchService;
 use Plenty\Modules\Order\Coupon\Campaign\Contracts\CouponCampaignRepositoryContract;
 use Plenty\Plugin\CachingRepository;
 use Plenty\Plugin\ConfigRepository;
@@ -148,9 +151,159 @@ class BadgeScript
         ];
     }
 
-    private function an(ConfigRepository $config, string $schluessel): bool
+    const AKTIONEN = 3;
+
+    /** Kalendertag aus dem Datumsfeld der Konfiguration als JJJJ-MM-TT (deutsche Zeit); leer = ohne Grenze */
+    private function tag(string $wert): string
     {
-        $wert = $config->get('OSVBadges.' . $schluessel, 'true');
+        $wert = trim($wert);
+        if ($wert === '') {
+            return '';
+        }
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $wert)) {
+            return $wert;
+        }
+        try {
+            $d = new \DateTime($wert);
+            $d->setTimezone(new \DateTimeZone('Europe/Berlin'));
+            return $d->format('Y-m-d');
+        } catch (\Throwable $fehler) {
+            return '';
+        }
+    }
+
+    /** Artikelnummer (oder Varianten-ID) in die Varianten-ID übersetzen, 10 Minuten zwischengespeichert */
+    private function variante(string $eingabe, array &$diag): int
+    {
+        $eingabe = trim($eingabe);
+        if ($eingabe === '') {
+            return 0;
+        }
+        if (preg_match('/^\d+$/', $eingabe)) {
+            return (int)$eingabe;
+        }
+        /** @var CachingRepository $cache */
+        $cache = pluginApp(CachingRepository::class);
+        $schluessel = 'OSVBadges_nr_' . md5($eingabe);
+        $id = $cache->get($schluessel);
+        if (is_numeric($id) && (int)$id > 0) {
+            return (int)$id;
+        }
+        $id = 0;
+        try {
+            /** @var AuthHelper $auth */
+            $auth = pluginApp(AuthHelper::class);
+            $id = (int)$auth->processUnguarded(function () use ($eingabe) {
+                /** @var VariationSearchRepositoryContract $repo */
+                $repo = pluginApp(VariationSearchRepositoryContract::class);
+                $repo->setFilters(['numberExact' => $eingabe]);
+                $treffer = $repo->search();
+                foreach ($treffer->getResult() as $v) {
+                    $v = is_array($v) ? $v : (is_object($v) ? $v->toArray() : []);
+                    if ((string)($v['number'] ?? '') === $eingabe) {
+                        return (int)($v['id'] ?? 0);
+                    }
+                }
+                return 0;
+            });
+        } catch (\Throwable $fehler) {
+            $diag['nrFehler'] = substr($fehler->getMessage(), 0, 160);
+        }
+        if ($id > 0) {
+            $cache->put($schluessel, $id, self::CACHE_MINUTEN);
+        }
+        return $id;
+    }
+
+    /**
+     * Aktionen aus der Konfiguration: Kategorien, Zeitraum, Texte und die Daten der Variante (Bild, Name, Preis, Link, Liefertermin).
+     * Ob eine Aktion gerade läuft und ob die Seite passt, entscheidet das Skript im Browser (Seitencache).
+     */
+    private function aktionen(ConfigRepository $config, array &$diagnose): array
+    {
+        $liste = [];
+        for ($n = 1; $n <= self::AKTIONEN; $n++) {
+            $p = 'OSVBadges.aktion' . $n . '.';
+            if (!$this->an($config, 'aktion' . $n . '.aktiv', 'false')) {
+                continue;
+            }
+            $diag = ['nr' => $n];
+            $kategorien = [];
+            foreach (explode(',', (string)$config->get($p . 'kategorien', '')) as $teil) {
+                $zahl = (int)trim($teil);
+                if ($zahl > 0) {
+                    $kategorien[] = $zahl;
+                }
+            }
+            $vid = $this->variante((string)$config->get($p . 'artikel', ''), $diag);
+            $diag['vid'] = $vid;
+            if (!$vid || !count($kategorien)) {
+                $diag['grund'] = !$vid ? 'Artikel nicht gefunden' : 'keine Kategorie';
+                $diagnose[] = $diag;
+                continue;
+            }
+            /** @var CachingRepository $cache */
+            $cache = pluginApp(CachingRepository::class);
+            $schluessel = 'OSVBadges_aktion_' . $vid;
+            $a = $cache->get($schluessel);
+            if (!is_array($a)) {
+                $a = [];
+                try {
+                    /** @var ItemSearchService $suche */
+                    $suche = pluginApp(ItemSearchService::class);
+                    $ergebnis = $suche->getResult(VariationList::getSearchFactory(['variationIds' => [$vid], 'itemsPerPage' => 1]));
+                    $d = $ergebnis['documents'][0]['data'] ?? [];
+                    if (count($d)) {
+                        $bild = $d['images']['variation'][0] ?? ($d['images']['all'][0] ?? []);
+                        $frei = (string)($d['variation']['releasedAt'] ?? '');
+                        $a = [
+                            'n' => (string)($d['texts']['name1'] ?? ''),
+                            'b' => (string)($bild['url'] ?? ($bild['urlMiddle'] ?? '')),
+                            'alt' => (string)($bild['alternate'] ?? ''),
+                            'u' => '/' . ($d['texts']['urlPath'] ?? '') . '_' . ($d['item']['id'] ?? 0) . '_' . $vid . '/',
+                            'p' => (string)($d['prices']['default']['price']['formatted'] ?? ''),
+                            'd' => preg_match('/^(\d{4})-(\d{2})-(\d{2})/', $frei, $m) ? $m[3] . '.' . $m[2] . '.' . $m[1] : '',
+                        ];
+                    }
+                } catch (\Throwable $fehler) {
+                    $diag['suchFehler'] = substr($fehler->getMessage(), 0, 160);
+                }
+                if (count($a)) {
+                    $cache->put($schluessel, $a, self::CACHE_MINUTEN);
+                }
+            }
+            if (!count($a)) {
+                $diag['grund'] = 'keine Artikeldaten (Variante im Shop aktiv und sichtbar?)';
+                $diagnose[] = $diag;
+                continue;
+            }
+            $text = function (string $feld) use ($config, $p) {
+                return trim((string)$config->get($p . $feld, ''));
+            };
+            $liste[] = $a + [
+                'k' => $kategorien,
+                's' => $this->tag((string)$config->get($p . 'von', '')),
+                'e' => $this->tag((string)$config->get($p . 'bis', '')),
+                'pos' => max(1, (int)$config->get($p . 'stelle', '1')),
+                'ecke' => $text('ecke'),
+                'marke' => $text('kennzeile'),
+                'titel' => $text('titel'),
+                'unter' => $text('unterzeile'),
+                'satz' => $text('satz'),
+                'liefer' => $text('lieferzeile'),
+                'knopf' => $text('knopf') !== '' ? $text('knopf') : 'Zum Artikel',
+                'bt' => $text('bandTitel'),
+                'bz' => $text('bandZeile'),
+            ];
+            $diag['ok'] = true;
+            $diagnose[] = $diag;
+        }
+        return $liste;
+    }
+
+    private function an(ConfigRepository $config, string $schluessel, string $standard = 'true'): bool
+    {
+        $wert = $config->get('OSVBadges.' . $schluessel, $standard);
         return !($wert === 'false' || $wert === false || $wert === '0');
     }
 
@@ -162,7 +315,9 @@ class BadgeScript
         $filter = $this->an($config, 'filterAktiv');
         $diagnose = [];
         $gutscheine = $this->gutscheine((string)$config->get('OSVBadges.gutscheinIds', ''), $diagnose);
-        if (!$sparen && !$kachel && !$liefer && !$filter && !count($gutscheine)) {
+        $aktionDiagnose = [];
+        $aktionen = $this->aktionen($config, $aktionDiagnose);
+        if (!$sparen && !$kachel && !$liefer && !$filter && !count($gutscheine) && !count($aktionen)) {
             return '';
         }
         $grenze = (float)str_replace(',', '.', (string)$config->get('OSVBadges.sparenGrenze', '100'));
@@ -173,8 +328,9 @@ class BadgeScript
         $textEuro = trim((string)$config->get('OSVBadges.sparenTextEuro', ''));
         $textVor = trim((string)$config->get('OSVBadges.lieferTextVor', ''));
         $zeileGutschein = trim((string)$config->get('OSVBadges.gutscheinZeile', ''));
-        return $twig->render('OSVBadges::Containers.BadgeAnzeige', [
+        return $twig->render('OSVBadges::Containers.KachelAnzeige', [
             'kachel' => $kachel,
+            'aktionen' => count($aktionen) > 0,
             'filter' => $filter,
             'einstellungJson' => json_encode([
                 'sparen' => $sparen,
@@ -190,6 +346,8 @@ class BadgeScript
                 'textVor' => $textVor !== '' ? $textVor : 'Lieferbar ab {datum}',
                 'gutscheine' => $gutscheine,
                 'gutscheinDiagnose' => $diagnose,
+                'aktionen' => $aktionen,
+                'aktionDiagnose' => $aktionDiagnose,
                 'zeileGutschein' => $zeileGutschein !== '' ? $zeileGutschein : 'Gilt bis {ende}, nicht mit anderen Gutscheinen kombinierbar.',
             ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT),
         ]);

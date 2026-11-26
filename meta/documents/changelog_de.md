@@ -2,6 +2,12 @@
 
 Neueste Version oben. Jede Version ist ein Git-Tag; im Plugin-Set wird der Tag gewählt.
 
+## 0.9.0 (26.11.2026)
+
+- Neues Menü „Aktionen“ mit drei Plätzen: Aktionskachel im Artikelraster (Rechner und Tablet, zwei Kacheln breit, Nachtblau mit Gold) und schmales Band über den Artikeln (Handy) für eine Variante, in gewählten Kategorien, nur zwischen „Sichtbar ab“ und „Sichtbar bis“ (Kay, 26.11.: Vorbestellung Jahresengel 2027)
+- Bild, Name, Preis, Link und Erscheinungsdatum kommen aus dem Artikel; Texte mit {name}, {preis}, {datum}
+- Vorlage heißt jetzt KachelAnzeige.twig (neue Felder, damit Plenty nicht die zwischengespeicherte Vorlage ausliefert)
+
 ## 0.8.8 (18.11.2026)
 
 - Gutschein-Code im Etikett der Artikelseite antippen bzw. anklicken kopiert ihn, kurz erscheint „✓ kopiert“; das Bild-Karussell reagiert auf diesen Klick nicht (Kay, 18.11.: Code war nicht kopierbar). Auf der Kachel bleibt ein Klick der Weg zum Artikel

@@ -78,6 +78,31 @@
 .widget-filter-base .card[data-osvf-sucht] .osvf-knopf { display: none; }
 .widget-filter-base .card .osvf-knopf { order: 999999; align-self: flex-start; margin: 4px 0 0 6px; padding: 0; border: 0; background: none; color: #0c2a5e; font-size: 13px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 {% endif %}
+{% if aktionen %}
+/* Aktionen: Aktionskachel im Artikelraster (ab 768 px, zwei Kacheln breit) und schmales Band über dem Raster (Handy); Nachtblau mit Gold */
+.osvak-li { display: flex; flex-direction: column; padding-bottom: 30px; }
+.osvak { position: relative; flex: 1 1 auto; display: flex; min-height: 100%; border-radius: 10px; overflow: hidden; background: #0c2a5e; color: #fff; text-decoration: none !important; box-shadow: 0 2px 10px rgba(12,42,94,.12); transition: transform .18s, box-shadow .18s; }
+.osvak:hover { transform: translateY(-3px); box-shadow: 0 6px 22px rgba(12,42,94,.22); }
+.osvak-bild { position: relative; flex: 0 0 46%; overflow: hidden; background: #fff; }
+.osvak-bild img { position: absolute; top: 50%; left: 50%; height: 150%; width: auto; max-width: none; transform: translate(-50%, -50%); }
+.osvak-ecke { position: absolute; top: 16px; left: -36px; z-index: 2; transform: rotate(-45deg); background: #d4b062; color: #0c2a5e; font-size: 11.5px; font-weight: 700; letter-spacing: .08em; padding: 5px 42px; text-transform: uppercase; }
+.osvak-text { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 26px 26px 24px; }
+.osvak-marke { color: #d4b062; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; margin-bottom: 10px; }
+.osvak-titel { color: #fff; font-size: 30px; line-height: 1.1; font-weight: 700; margin: 0 0 4px; }
+.osvak-unter { color: #d4b062; font-size: 18px; font-style: italic; margin-bottom: 14px; }
+.osvak-satz { font-size: 14.5px; line-height: 1.45; margin-bottom: 16px; }
+.osvak-liefer { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; padding: 6px 12px; border-radius: 30px; margin-bottom: 18px; background: rgba(212,176,98,.16); color: #f3dfae; border: 1px solid rgba(212,176,98,.5); }
+.osvak-fuss { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.osvak-preis { font-size: 22px; font-weight: 700; }
+.osvak-knopf { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; padding: 11px 20px; border-radius: 6px; background: #d4b062; color: #0c2a5e; }
+.osvak-band { display: none; align-items: center; gap: 12px; flex-wrap: wrap; background: #0c2a5e; color: #fff; border-radius: 8px; padding: 10px; margin: 0 0 20px; text-decoration: none !important; box-shadow: 0 2px 10px rgba(12,42,94,.12); }
+.osvak-band img { width: 70px; height: 70px; object-fit: contain; background: #fff; border-radius: 6px; padding: 4px; }
+.osvak-band .osvak-b1 { flex: 1; min-width: 0; }
+.osvak-band .osvak-b1 b { display: block; font-size: 17px; line-height: 1.25; color: #fff; }
+.osvak-band .osvak-b1 span { font-size: 14px; color: #f3dfae; }
+.osvak-band .osvak-knopf { width: 100%; justify-content: center; }
+@media (max-width: 767.98px) { .osvak-li { display: none !important; } .osvak-band { display: flex; } }
+{% endif %}
 </style>
 <script>
 /* OSV Badges: Badges, Lieferbarkeit und Sterne auf Artikelkacheln (Ceres-Kategorien und OSV-Suchergebnisse). Kein MutationObserver, kein Vue.component, kein ceresStore. */
@@ -151,6 +176,58 @@
     codeHervorheben(band.firstChild);
     if (!zeile) { zeile = document.createElement("p"); zeile.className = "osvg-zeile"; bild.appendChild(zeile); }
     if (zeile.textContent !== satz) zeile.textContent = satz;
+  }
+
+
+  // Aktionen: Aktionskachel (ab 768 px) und Band (Handy) auf Seite 1 der genannten Kategorien, nur im Zeitraum (Kalendertag im Browser)
+  var AKT = EIN.aktionen || [];
+  window.OSVBadgesAktionen = { aktionen: AKT, diagnose: EIN.aktionDiagnose || [] };
+  function heute() { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+  function kategorie() { var m = /(?:^|\s)category-(\d+)(?:\s|$)/.exec(document.body.className || ""); return m ? +m[1] : 0; }
+  function seiteEins() { var m = /[?&]page=(\d+)/.exec(location.search); return !m || +m[1] <= 1; }
+  function aktText(vorlage, a) { return String(vorlage || "").split("{name}").join(a.n).split("{preis}").join(a.p).split("{datum}").join(a.d).replace(/\s{2,}/g, " ").trim(); }
+  function el(tag, klasse, text) { var e = document.createElement(tag); if (klasse) e.className = klasse; if (text) e.textContent = text; return e; }
+  function pfeil() { var i = el("i", "fa fa-arrow-right"); i.setAttribute("aria-hidden", "true"); return i; }
+  function aktKachel(a, nr) {
+    var li = el("li", "col-12 col-md-12 col-lg-6 osvak-li"); li.setAttribute("data-osvak", nr);
+    var k = el("a", "osvak"); k.href = a.u; li.appendChild(k);
+    var bild = el("div", "osvak-bild"); k.appendChild(bild);
+    if (a.ecke) bild.appendChild(el("div", "osvak-ecke", a.ecke));
+    if (a.b) { var img = el("img"); img.src = a.b; img.alt = a.alt || a.n; img.decoding = "async"; bild.appendChild(img); }
+    var t = el("div", "osvak-text"); k.appendChild(t);
+    if (a.marke) t.appendChild(el("div", "osvak-marke", aktText(a.marke, a)));
+    t.appendChild(el("div", "osvak-titel", aktText(a.titel || "{name}", a)));
+    if (a.unter) t.appendChild(el("div", "osvak-unter", aktText(a.unter, a)));
+    if (a.satz) t.appendChild(el("div", "osvak-satz", aktText(a.satz, a)));
+    if (a.liefer && (a.d || a.liefer.indexOf("{datum}") < 0)) { var l = el("div", "osvak-liefer"); var kal = el("i", "fa fa-calendar"); kal.setAttribute("aria-hidden", "true"); l.appendChild(kal); l.appendChild(document.createTextNode(" " + aktText(a.liefer, a))); t.appendChild(l); }
+    var f = el("div", "osvak-fuss"); t.appendChild(f);
+    if (a.p) { var pr = el("div", "osvak-preis", a.p + " "); pr.appendChild(el("small", "", "*")); f.appendChild(pr); }
+    var kn = el("span", "osvak-knopf", aktText(a.knopf, a) + " "); kn.appendChild(pfeil()); f.appendChild(kn);
+    return li;
+  }
+  function aktBand(a, nr) {
+    var b = el("a", "osvak-band"); b.href = a.u; b.setAttribute("data-osvak", nr);
+    if (a.b) { var img = el("img"); img.src = a.b; img.alt = a.alt || a.n; img.decoding = "async"; b.appendChild(img); }
+    var t = el("div", "osvak-b1"); b.appendChild(t);
+    t.appendChild(el("b", "", aktText(a.bt || "{name}", a)));
+    var z = aktText(a.bz || (a.d ? "Lieferung ab {datum} · {preis}" : "{preis}"), a); if (z) t.appendChild(el("span", "", z));
+    var kn = el("span", "osvak-knopf", aktText(a.knopf, a) + " "); kn.appendChild(pfeil()); b.appendChild(kn);
+    return b;
+  }
+  function aktionen() {
+    var liste = document.querySelector(".product-list");
+    if (!liste || !AKT.length) return;
+    var kat = kategorie(), tag = heute(), eins = seiteEins();
+    AKT.forEach(function (a, i) {
+      var nr = String(i + 1), soll = eins && kat && a.k.indexOf(kat) >= 0 && (!a.s || tag >= a.s) && (!a.e || tag <= a.e);
+      var li = liste.querySelector(':scope > li[data-osvak="' + nr + '"]'), band = liste.parentNode.querySelector(':scope > a.osvak-band[data-osvak="' + nr + '"]');
+      if (!soll) { if (li) li.parentNode.removeChild(li); if (band) band.parentNode.removeChild(band); return; }
+      if (!li) {
+        var artikel = [].filter.call(liste.children, function (c) { return !c.hasAttribute("data-osvak"); });
+        liste.insertBefore(aktKachel(a, nr), artikel[a.pos - 1] || null);
+      }
+      if (!band) liste.parentNode.insertBefore(aktBand(a, nr), liste);
+    });
   }
 
   // Regeln: jede liefert für eine Kachel einen Badge-Text oder nichts; die erste mit Text gewinnt. Weitere Badges hier anhängen.
@@ -336,6 +413,7 @@
     });
     if (EIN.filter) filter();
     if (GUT.length) { try { artikelseite(); } catch (x) { } }
+    if (AKT.length) { try { aktionen(); } catch (x) { } }
   }
   // Kacheln kommen vom Server, per Filter/Blättern neu von Ceres oder später von der OSV-Suche;
   // deshalb nach dem Start der Ceres-App und danach in festen Abständen nachsehen (billig, ändert nur bei Bedarf)
