@@ -2,6 +2,10 @@
 
 Neueste Version oben. Jede Version ist ein Git-Tag; im Plugin-Set wird der Tag gewählt.
 
+## 0.9.3 (26.11.2026)
+
+- Aktionskachel: Artikelbild zeigt die ganze Figur (eingepasst statt auf 150 % vergrößert); auf breiten Bildschirmen waren Kopf und Fuß abgeschnitten (Kay, 26.11.)
+
 ## 0.9.2 (26.11.2026)
 
 - Aktionskachel und Band: Texte wurden beim Darüberfahren mit der Maus schwarz (Linkfarbe der Shop-Vorlage, Kay 26.11.), Farben jetzt fest; Button wird beim Darüberfahren etwas heller
