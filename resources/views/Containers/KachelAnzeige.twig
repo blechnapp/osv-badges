@@ -101,6 +101,13 @@
 .osvak-band .osvak-b1 b { display: block; font-size: 17px; line-height: 1.25; color: #fff; }
 .osvak-band .osvak-b1 span { font-size: 14px; color: #f3dfae; }
 .osvak-band .osvak-knopf { width: 100%; justify-content: center; }
+/* Shop-Vorlage färbt Links bei Mauszeiger/Fokus ein: Farben in Kachel und Band fest halten */
+a.osvak, a.osvak:hover, a.osvak:focus, a.osvak:active, a.osvak-band, a.osvak-band:hover, a.osvak-band:focus, a.osvak-band:active { color: #fff !important; text-decoration: none !important; }
+a.osvak .osvak-titel, a.osvak .osvak-satz, a.osvak .osvak-preis, a.osvak-band .osvak-b1 b { color: #fff !important; }
+a.osvak .osvak-marke, a.osvak .osvak-unter { color: #d4b062 !important; }
+a.osvak .osvak-liefer, a.osvak-band .osvak-b1 span { color: #f3dfae !important; }
+a.osvak .osvak-knopf, a.osvak-band .osvak-knopf { color: #0c2a5e !important; }
+a.osvak:hover .osvak-knopf, a.osvak-band:hover .osvak-knopf { background: #e0c47e; }
 @media (max-width: 767.98px) { .osvak-li { display: none !important; } .osvak-band { display: flex; } }
 {% endif %}
 </style>
