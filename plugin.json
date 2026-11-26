@@ -2,7 +2,7 @@
   "name": "OSVBadges",
   "namespace": "OSVBadges",
   "type": "general",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "license": "proprietary",
   "author": "OSV",
   "shortDescription": "Kategorieseite: Artikelkacheln (Badge „Sie sparen“, Karte, Lieferbarkeit, Sterne), Filter und Aktionskachel.",
@@ -24,6 +24,12 @@
       "name": "OSV Badges",
       "description": "Setzt die Badges auf die Artikelkacheln.",
       "defaultLayoutContainer": "Ceres::Script.AfterScriptsLoaded"
+    },
+    {
+      "key": "OSVBadges\\Containers\\AktionsPlatz",
+      "name": "OSV Badges Aktionsplatz",
+      "description": "Hält im Seitenkopf den Platz der Aktionskachel frei (keine Verschiebung beim Laden).",
+      "defaultLayoutContainer": "Ceres::Template.Style"
     }
   ]
 }

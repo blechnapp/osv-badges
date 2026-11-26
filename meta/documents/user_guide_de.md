@@ -10,7 +10,7 @@ Konfiguration, Menü „Aktionen“ mit drei Plätzen „Aktion 1“ bis „Akti
 - Texte: Eckband, Kennzeile, Titel, Zeile darunter, Text, Lieferzeile, Button, dazu Titel und Zeile für das Band am Handy. Platzhalter: `{name}` (Artikelname), `{preis}` (aktueller Shoppreis), `{datum}` (Erscheinungsdatum der Variante).
 - Bild, Name, Preis, Link und Erscheinungsdatum holt das Plugin aus dem Artikel (Änderungen nach höchstens 10 Minuten).
 
-Am Rechner und Tablet erscheint eine nachtblaue Aktionskachel mit Gold, zwei Kacheln breit, an der eingestellten Stelle im Raster. Am Handy steht stattdessen ein schmales Band über den Artikeln. Nur auf Seite 1 der Kategorie; vor „Sichtbar ab“ und nach „Sichtbar bis“ verschwindet die Aktion von selbst. Prüfen im Browser: `OSVBadgesAktionen` in der Konsole zeigt die geladenen Aktionen und den Grund, falls eine fehlt.
+Am Rechner und Tablet erscheint eine nachtblaue Aktionskachel mit Gold, zwei Kacheln breit, an der eingestellten Stelle im Raster. Am Handy steht stattdessen ein schmales Band über den Artikeln. Nur auf Seite 1 der Kategorie; vor „Sichtbar ab“ und nach „Sichtbar bis“ verschwindet die Aktion von selbst. Container-Verknüpfung: **OSV Badges Aktionsplatz** → `Ceres::Template.Style` (je Plugin-Set). Sie hält den Platz der Kachel an Stelle 1 schon beim ersten Zeichnen frei, damit beim Laden nichts verrutscht (CLS). Ohne Verknüpfung erscheint die Kachel trotzdem, verschiebt dann aber die Artikel. Prüfen im Browser: `OSVBadgesAktionen` in der Konsole zeigt die geladenen Aktionen und den Grund, falls eine fehlt.
 
 ## Gutschein-Aktion (ab 0.8.0)
 

@@ -108,6 +108,8 @@ a.osvak .osvak-marke, a.osvak .osvak-unter { color: #d4b062 !important; }
 a.osvak .osvak-liefer, a.osvak-band .osvak-b1 span { color: #f3dfae !important; }
 a.osvak .osvak-knopf, a.osvak-band .osvak-knopf { color: #0c2a5e !important; }
 a.osvak:hover .osvak-knopf, a.osvak-band:hover .osvak-knopf { background: #e0c47e; }
+/* Tablet: Kachel steht allein in ihrer Reihe, feste Höhe wie der freigehaltene Platz (AktionsPlatz) */
+@media (min-width: 768px) and (max-width: 991.98px) { .osvak-li { height: 430px; } }
 @media (max-width: 767.98px) { .osvak-li { display: none !important; } .osvak-band { display: flex; } }
 {% endif %}
 </style>
@@ -222,7 +224,7 @@ a.osvak:hover .osvak-knopf, a.osvak-band:hover .osvak-knopf { background: #e0c47
     return b;
   }
   function aktionen() {
-    var liste = document.querySelector(".product-list");
+    var liste = document.querySelector(".widget-item-grid .product-list") || document.querySelector(".product-list");
     if (!liste || !AKT.length) return;
     var kat = kategorie(), tag = heute(), eins = seiteEins();
     AKT.forEach(function (a, i) {
@@ -235,6 +237,8 @@ a.osvak:hover .osvak-knopf, a.osvak-band:hover .osvak-knopf { background: #e0c47
       }
       if (!band) liste.parentNode.insertBefore(aktBand(a, nr), liste);
     });
+    // Freigehaltenen Platz aus dem Seitenkopf (AktionsPlatz) im selben Schritt aufgeben, in dem die Kachel steht
+    document.documentElement.classList.add("osvak-drin");
   }
 
   // Regeln: jede liefert für eine Kachel einen Badge-Text oder nichts; die erste mit Text gewinnt. Weitere Badges hier anhängen.
@@ -428,6 +432,8 @@ a.osvak:hover .osvak-knopf, a.osvak-band:hover .osvak-knopf { background: #e0c47
     var app = window.vueApp;
     if (!(app && app._isMounted) && versuch < 40) { setTimeout(function () { start(versuch + 1); }, 100); return; }
     alle();
+    // Spätestens jetzt den freigehaltenen Platz aufgeben, auch wenn keine Aktion eingesetzt wurde (sonst bliebe eine Lücke)
+    document.documentElement.classList.add("osvak-drin");
     setInterval(alle, 1000);
     if (EIN.filter) { sprungZurueck(); document.addEventListener("click", sprungMerken, true); }
   }

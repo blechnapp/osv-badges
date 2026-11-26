@@ -2,6 +2,11 @@
 
 Neueste Version oben. Jede Version ist ein Git-Tag; im Plugin-Set wird der Tag gewählt.
 
+## 0.9.5 (26.11.2026)
+
+- Aktionskachel verschiebt beim Laden nichts mehr: neuer Baustein „OSV Badges Aktionsplatz“ (Container `Ceres::Template.Style`) hält den Platz an Stelle 1 schon im Seitenkopf frei, die Kachel füllt ihn nur noch. Vorher am Rechner CLS bis 0,08 (2560 px), Tablet 0,05; lokal danach 0 bis 0,0002 (Kay 26.11.: Search Console)
+- Tablet (768–991 px): Kachel mit fester Höhe 430 px, gleich dem freigehaltenen Platz
+
 ## 0.9.4 (26.11.2026)
 
 - Vorlage heißt jetzt AktionsAnzeige.twig: Set 78 lieferte nach dem Bereitstellen von 0.9.2 noch die zwischengespeicherte Vorlage aus, die Farbkorrektur fehlte im Seitencode
